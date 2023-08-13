@@ -63,7 +63,7 @@ export class Workspace {
     this.connection = this.provider.connection;
   }
 
-  /** Finds the Platform PDA of a given domain & authority address. */
+  /** Finds the Platform PDA for given domain & authority address. */
   findPlatformPda = (domain: string, authority: PublicKey) =>
     PublicKey.findProgramAddressSync(
       [
@@ -74,14 +74,32 @@ export class Workspace {
       this.programId
     )[0];
 
-  /** Finds the Platform PDA of a given domain & authority address. */
+  /** Finds the Artist PDA for given authority address. */
   findArtistPda = (authority: PublicKey) =>
     PublicKey.findProgramAddressSync(
       [Buffer.from(this.ARTIST_PREFIX), authority.toBuffer()],
       this.programId
     )[0];
 
-  /** Finds the Metadata PDA of a given mint address. */
+  /** Finds the Collection PDA for given authority address & mint address. */
+  findCollectionPda = (authority: PublicKey, mint: PublicKey) =>
+    PublicKey.findProgramAddressSync(
+      [
+        Buffer.from(this.COLLECTION_PREFIX),
+        authority.toBuffer(),
+        mint.toBuffer(),
+      ],
+      this.programId
+    )[0];
+
+  /** Finds the Artwork PDA for given authority address & mint address. */
+  findArtworkPda = (authority: PublicKey, mint: PublicKey) =>
+    PublicKey.findProgramAddressSync(
+      [Buffer.from(this.ARTWORK_PREFIX), authority.toBuffer(), mint.toBuffer()],
+      this.programId
+    )[0];
+
+  /** Finds the Metadata PDA for given mint address. */
   findMetadataPda = (mint: PublicKey) => {
     return PublicKey.findProgramAddressSync(
       [
@@ -93,7 +111,7 @@ export class Workspace {
     )[0];
   };
 
-  /** Finds the Master Edition PDA of a given mint address. */
+  /** Finds the Master Edition PDA for given mint address. */
   findMasterEditionPda = (mint: PublicKey) => {
     return PublicKey.findProgramAddressSync(
       [
@@ -106,7 +124,7 @@ export class Workspace {
     )[0];
   };
 
-  /** Finds the Edition PDA of a given mint address. */
+  /** Finds the Edition PDA for given mint address. */
   findEditionPda = (mint: PublicKey) => {
     return this.findMasterEditionPda(mint);
   };

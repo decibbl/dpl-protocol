@@ -34,6 +34,15 @@ add-supported-token-details = "ts-node ./scripts/platform/addSupportedTokenDetai
 add-subscription-plan = "ts-node ./scripts/platform/addSubscriptionPlan.ts"
 update-subscription-plan = "ts-node ./scripts/platform/updateSubscriptionPlan.ts"
 
-#artist
+# artist
 get-artists = "ts-node ./scripts/artist/getArtists.ts"
 create-artist = "ts-node ./scripts/artist/createArtist.ts"
+
+# collection
+get-collections = "ts-node ./scripts/collection/getCollections.ts"
+create-collection = "ts-node ./scripts/collection/createCollection.ts"
+
+# artwork
+get-artworks = "ts-node ./scripts/artwork/getArtworks.ts"
+create-c-artwork = "ts-node ./scripts/artwork/createCArtwork.ts"
+create-i-artwork = "ts-node ./scripts/artwork/createIArtwork.ts"

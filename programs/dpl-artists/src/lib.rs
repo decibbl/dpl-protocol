@@ -4,10 +4,9 @@ pub mod instructions;
 pub mod states;
 pub mod utils;
 
-// use {anchor_lang::prelude::*, instructions::*, platform::*, collection::*, artwork::*};
 use crate::states::platform::SubscriptionPlan;
 use mpl_token_metadata::state::AssetData;
-use {anchor_lang::prelude::*, artist::*, instructions::*, platform::*};
+use {anchor_lang::prelude::*, artist::*, instructions::*, platform::*, collection::*, artwork::*};
 
 declare_id!("ywpMZZNG3Nx1Bu2deJCcNxzUUoWSm6YwN9r9jCF8art");
 
@@ -60,4 +59,13 @@ pub mod dpl_artists {
     pub fn create_artist(ctx: Context<CreateArtist>, asset_data: AssetData) -> Result<()> {
         artist::create_artist_handler(ctx, asset_data)
     }
+
+    pub fn create_collection(ctx: Context<CreateCollection>, asset_data: AssetData) -> Result<()> {
+        collection::create_collection_handler(ctx, asset_data)
+    }
+
+    pub fn create_artwork(ctx: Context<CreateArtwork>, asset_data: AssetData, is_collection: bool) -> Result<()> {
+        artwork::create_artwork_handler(ctx, asset_data, is_collection)
+    }
+
 }

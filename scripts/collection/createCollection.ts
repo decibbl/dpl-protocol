@@ -13,7 +13,11 @@ import { initializeKeypair } from "../initializeKeypair";
 import { uploadMetadata } from "../ipfs";
 import { Network, getUrls } from "../networks";
 
-export const createArtist = async ({ platform }: { platform: PublicKey }) => {
+export const createCollection = async ({
+  platform,
+}: {
+  platform: PublicKey;
+}) => {
   try {
     const authority = await initializeKeypair(connection, "artist1");
     const workspace = new Workspace(authority);
@@ -24,6 +28,12 @@ export const createArtist = async ({ platform }: { platform: PublicKey }) => {
     const mint = Keypair.generate();
     console.log("Mint:", mint.publicKey.toBase58());
 
+    const collection = workspace.findCollectionPda(
+      authority.publicKey,
+      mint.publicKey
+    );
+    console.log("Collection:", artist.toBase58());
+
     const tokenAccount = getAssociatedTokenAddressSync(
       mint.publicKey,
       authority.publicKey
@@ -33,26 +43,24 @@ export const createArtist = async ({ platform }: { platform: PublicKey }) => {
 
     const masterEdition = workspace.findMasterEditionPda(mint.publicKey);
 
-    const fetchedPlatform = await workspace.program.account.platform.fetch(
-      platform
-    );
+    const fetchedArtist = await workspace.program.account.artist.fetch(artist);
 
     const jsonMetadata = {
-      name: "Artist One",
-      description: "Decibbl Music Platform's first artist.",
-      symbol: "ARTIST",
+      name: "Collection One",
+      description: "Decibbl Music Platform's first artist's first collection.",
+      symbol: "COL",
     };
 
     const uri = await uploadMetadata(
       connection,
       authority,
-      "./assets/Artist1.png",
-      "Artist.png",
+      "./assets/Collection1.png",
+      "Collection.png",
       jsonMetadata
     );
     console.log("URI:", uri);
 
-    const collectionMint = fetchedPlatform.artistMint;
+    const collectionMint = fetchedArtist.mint;
 
     console.log("Artist Mint:", collectionMint.toBase58());
 
@@ -66,7 +74,7 @@ export const createArtist = async ({ platform }: { platform: PublicKey }) => {
       symbol: jsonMetadata.symbol,
       uri,
       sellerFeeBasisPoints: 0,
-      creators: [{ address: platform, share: 100, verified: false }],
+      creators: [{ address: authority.publicKey, share: 100, verified: true }],
       primarySaleHappened: false,
       isMutable: true,
       tokenStandard: { nonFungible: {} },
@@ -81,8 +89,8 @@ export const createArtist = async ({ platform }: { platform: PublicKey }) => {
         units: 500000,
       });
 
-    const createArtistInstruction = await workspace.program.methods
-      .createArtist({
+    const createCollectionInstruction = await workspace.program.methods
+      .createCollection({
         name: assetData.name,
         symbol: assetData.symbol,
         uri: assetData.uri,
@@ -97,6 +105,7 @@ export const createArtist = async ({ platform }: { platform: PublicKey }) => {
         ruleSet: assetData.ruleSet,
       })
       .accounts({
+        collection,
         artist,
         platform,
         authority: authority.publicKey,
@@ -109,14 +118,15 @@ export const createArtist = async ({ platform }: { platform: PublicKey }) => {
         collectionMint,
         collectionMetadata,
         collectionMasterEdition,
-        collectionAuthority: fetchedPlatform.authority,
-        tokenMint: fetchedPlatform.supportedTokens[0].mint,
       })
       .signers([])
       .instruction();
 
     const messageV0 = new TransactionMessage({
-      instructions: [modifyComputeUnitsInstruction, createArtistInstruction],
+      instructions: [
+        modifyComputeUnitsInstruction,
+        createCollectionInstruction,
+      ],
       payerKey: authority.publicKey,
       recentBlockhash: (await connection.getLatestBlockhash()).blockhash,
     }).compileToV0Message();
@@ -127,7 +137,7 @@ export const createArtist = async ({ platform }: { platform: PublicKey }) => {
     const signature = await connection.sendTransaction(transaction, {});
 
     console.log(
-      "Create Artist Signature:",
+      "Create Collection Signature:",
       getUrls(Network[network], signature, "tx").explorer
     );
   } catch (error) {
@@ -135,6 +145,6 @@ export const createArtist = async ({ platform }: { platform: PublicKey }) => {
   }
 };
 
-createArtist({
+createCollection({
   platform: new PublicKey(process.argv[2]),
 });

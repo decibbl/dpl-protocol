@@ -13,7 +13,13 @@ import { initializeKeypair } from "../initializeKeypair";
 import { uploadMetadata } from "../ipfs";
 import { Network, getUrls } from "../networks";
 
-export const createArtist = async ({ platform }: { platform: PublicKey }) => {
+export const createCArtwork = async ({
+  platform,
+  collection,
+}: {
+  platform: PublicKey;
+  collection: PublicKey;
+}) => {
   try {
     const authority = await initializeKeypair(connection, "artist1");
     const workspace = new Workspace(authority);
@@ -24,6 +30,12 @@ export const createArtist = async ({ platform }: { platform: PublicKey }) => {
     const mint = Keypair.generate();
     console.log("Mint:", mint.publicKey.toBase58());
 
+    const artwork = workspace.findArtworkPda(
+      authority.publicKey,
+      mint.publicKey
+    );
+    console.log("Artwork:", artwork.toBase58());
+
     const tokenAccount = getAssociatedTokenAddressSync(
       mint.publicKey,
       authority.publicKey
@@ -33,28 +45,29 @@ export const createArtist = async ({ platform }: { platform: PublicKey }) => {
 
     const masterEdition = workspace.findMasterEditionPda(mint.publicKey);
 
-    const fetchedPlatform = await workspace.program.account.platform.fetch(
-      platform
+    const fetchedCollection = await workspace.program.account.collection.fetch(
+      collection
     );
 
     const jsonMetadata = {
-      name: "Artist One",
-      description: "Decibbl Music Platform's first artist.",
-      symbol: "ARTIST",
+      name: "Artwork One",
+      description:
+        "Decibbl Music Platform's first artist's first collection's first artwork.",
+      symbol: "ART",
     };
 
     const uri = await uploadMetadata(
       connection,
       authority,
-      "./assets/Artist1.png",
-      "Artist.png",
+      "./assets/Artwork1.png",
+      "Artwork.png",
       jsonMetadata
     );
     console.log("URI:", uri);
 
-    const collectionMint = fetchedPlatform.artistMint;
+    const collectionMint = fetchedCollection.mint;
 
-    console.log("Artist Mint:", collectionMint.toBase58());
+    console.log("Collection Mint:", collectionMint.toBase58());
 
     const collectionMetadata = workspace.findMetadataPda(collectionMint);
 
@@ -66,7 +79,7 @@ export const createArtist = async ({ platform }: { platform: PublicKey }) => {
       symbol: jsonMetadata.symbol,
       uri,
       sellerFeeBasisPoints: 0,
-      creators: [{ address: platform, share: 100, verified: false }],
+      creators: [{ address: authority.publicKey, share: 100, verified: true }],
       primarySaleHappened: false,
       isMutable: true,
       tokenStandard: { nonFungible: {} },
@@ -81,22 +94,27 @@ export const createArtist = async ({ platform }: { platform: PublicKey }) => {
         units: 500000,
       });
 
-    const createArtistInstruction = await workspace.program.methods
-      .createArtist({
-        name: assetData.name,
-        symbol: assetData.symbol,
-        uri: assetData.uri,
-        sellerFeeBasisPoints: assetData.sellerFeeBasisPoints,
-        creators: assetData.creators,
-        primarySaleHappened: assetData.primarySaleHappened,
-        isMutable: assetData.isMutable,
-        tokenStandard: assetData.tokenStandard,
-        collection: assetData.collection,
-        uses: assetData.uses,
-        collectionDetails: assetData.collectionDetails,
-        ruleSet: assetData.ruleSet,
-      })
+    const createCollectionInstruction = await workspace.program.methods
+      .createArtwork(
+        {
+          name: assetData.name,
+          symbol: assetData.symbol,
+          uri: assetData.uri,
+          sellerFeeBasisPoints: assetData.sellerFeeBasisPoints,
+          creators: assetData.creators,
+          primarySaleHappened: assetData.primarySaleHappened,
+          isMutable: assetData.isMutable,
+          tokenStandard: assetData.tokenStandard,
+          collection: assetData.collection,
+          uses: assetData.uses,
+          collectionDetails: assetData.collectionDetails,
+          ruleSet: assetData.ruleSet,
+        },
+        true
+      )
       .accounts({
+        artwork,
+        collection,
         artist,
         platform,
         authority: authority.publicKey,
@@ -109,14 +127,15 @@ export const createArtist = async ({ platform }: { platform: PublicKey }) => {
         collectionMint,
         collectionMetadata,
         collectionMasterEdition,
-        collectionAuthority: fetchedPlatform.authority,
-        tokenMint: fetchedPlatform.supportedTokens[0].mint,
       })
       .signers([])
       .instruction();
 
     const messageV0 = new TransactionMessage({
-      instructions: [modifyComputeUnitsInstruction, createArtistInstruction],
+      instructions: [
+        modifyComputeUnitsInstruction,
+        createCollectionInstruction,
+      ],
       payerKey: authority.publicKey,
       recentBlockhash: (await connection.getLatestBlockhash()).blockhash,
     }).compileToV0Message();
@@ -127,7 +146,7 @@ export const createArtist = async ({ platform }: { platform: PublicKey }) => {
     const signature = await connection.sendTransaction(transaction, {});
 
     console.log(
-      "Create Artist Signature:",
+      "Create Artwork Signature:",
       getUrls(Network[network], signature, "tx").explorer
     );
   } catch (error) {
@@ -135,6 +154,7 @@ export const createArtist = async ({ platform }: { platform: PublicKey }) => {
   }
 };
 
-createArtist({
+createCArtwork({
   platform: new PublicKey(process.argv[2]),
+  collection: new PublicKey(process.argv[3]),
 });
