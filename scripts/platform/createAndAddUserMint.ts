@@ -1,20 +1,16 @@
+import { getAssociatedTokenAddressSync } from "@solana/spl-token";
 import {
   ComputeBudgetProgram,
   Keypair,
   SYSVAR_INSTRUCTIONS_PUBKEY,
   TransactionMessage,
   VersionedTransaction,
-  sendAndConfirmTransaction,
 } from "@solana/web3.js";
 import { Workspace, connection, network } from "..";
 import { initializeKeypair } from "../initializeKeypair";
-import { getAssociatedTokenAddressSync } from "@solana/spl-token";
-import { Network, getUrls } from "../networks";
-import {
-  AssetData,
-  TokenStandard,
-} from "@metaplex-foundation/mpl-token-metadata";
 import { uploadMetadata } from "../ipfs";
+import { Network, getUrls } from "../networks";
+import { BN } from "@coral-xyz/anchor";
 
 export const createAndAddUserMint = async ({ domain }: { domain: string }) => {
   try {
@@ -73,7 +69,7 @@ export const createAndAddUserMint = async ({ domain }: { domain: string }) => {
       tokenStandard: { nonFungible: {} },
       collection: { key: fetchedPlatform.mint, verified: false },
       uses: null,
-      collectionDetails: null,
+      collectionDetails: { v1: { size: new BN(0) } },
       ruleSet: null,
     };
 

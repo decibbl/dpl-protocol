@@ -3,6 +3,7 @@ import { getAssociatedTokenAddressSync } from "@solana/spl-token";
 import {
   ComputeBudgetProgram,
   Keypair,
+  PublicKey,
   SYSVAR_INSTRUCTIONS_PUBKEY,
   TransactionMessage,
   VersionedTransaction,
@@ -12,17 +13,13 @@ import { initializeKeypair } from "../initializeKeypair";
 import { uploadMetadata } from "../ipfs";
 import { Network, getUrls } from "../networks";
 
-export const createAndAddArtistMint = async ({
-  domain,
-}: {
-  domain: string;
-}) => {
+export const createArtist = async ({ platform }: { platform: PublicKey }) => {
   try {
-    const authority = await initializeKeypair(connection, "platform1");
+    const authority = await initializeKeypair(connection, "artist1");
     const workspace = new Workspace(authority);
 
-    const platform = workspace.findPlatformPda(domain, authority.publicKey);
-    console.log("Platform:", platform.toBase58());
+    const artist = workspace.findArtistPda(authority.publicKey);
+    console.log("Artist:", artist.toBase58());
 
     const mint = Keypair.generate();
     console.log("Mint:", mint.publicKey.toBase58());
@@ -41,21 +38,23 @@ export const createAndAddArtistMint = async ({
     );
 
     const jsonMetadata = {
-      name: "Decibbl Music | Artist Mint",
-      description: "Artist Mint for Decibbl Music Platform.",
+      name: "Artist One",
+      description: "Decibbl Music Platform's first artist.",
       symbol: "ART",
     };
 
     const uri = await uploadMetadata(
       connection,
       authority,
-      "./assets/ArtistMint.png",
-      "ArtistMint.png",
+      "./assets/Artist1.png",
+      "Artist.png",
       jsonMetadata
     );
     console.log("URI:", uri);
 
-    const collectionMint = fetchedPlatform.mint;
+    const collectionMint = fetchedPlatform.artistMint;
+
+    console.log("Artist Mint:", collectionMint.toBase58());
 
     const collectionMetadata = workspace.findMetadataPda(collectionMint);
 
@@ -67,11 +66,11 @@ export const createAndAddArtistMint = async ({
       symbol: jsonMetadata.symbol,
       uri,
       sellerFeeBasisPoints: 0,
-      creators: [{ address: platform, share: 100, verified: true }],
+      creators: [{ address: platform, share: 100, verified: false }],
       primarySaleHappened: false,
       isMutable: true,
       tokenStandard: { nonFungible: {} },
-      collection: { key: fetchedPlatform.mint, verified: false },
+      collection: { key: fetchedPlatform.artistMint, verified: false },
       uses: null,
       collectionDetails: { v1: { size: new BN(0) } },
       ruleSet: null,
@@ -82,8 +81,8 @@ export const createAndAddArtistMint = async ({
         units: 500000,
       });
 
-    const createAndAddArtistMintInstruction = await workspace.program.methods
-      .createAndAddArtistMint({
+    const createArtistInstruction = await workspace.program.methods
+      .createArtist({
         name: assetData.name,
         symbol: assetData.symbol,
         uri: assetData.uri,
@@ -98,6 +97,7 @@ export const createAndAddArtistMint = async ({
         ruleSet: assetData.ruleSet,
       })
       .accounts({
+        artist,
         platform,
         authority: authority.publicKey,
         mint: mint.publicKey,
@@ -109,15 +109,14 @@ export const createAndAddArtistMint = async ({
         collectionMint,
         collectionMetadata,
         collectionMasterEdition,
+        collectionAuthority: fetchedPlatform.authority,
+        tokenMint: fetchedPlatform.supportedTokens[0].mint,
       })
       .signers([])
       .instruction();
 
     const messageV0 = new TransactionMessage({
-      instructions: [
-        modifyComputeUnitsInstruction,
-        createAndAddArtistMintInstruction,
-      ],
+      instructions: [modifyComputeUnitsInstruction, createArtistInstruction],
       payerKey: authority.publicKey,
       recentBlockhash: (await connection.getLatestBlockhash()).blockhash,
     }).compileToV0Message();
@@ -128,7 +127,7 @@ export const createAndAddArtistMint = async ({
     const signature = await connection.sendTransaction(transaction, {});
 
     console.log(
-      "Create Artist Mint Signature:",
+      "Create Artist Signature:",
       getUrls(Network[network], signature, "tx").explorer
     );
   } catch (error) {
@@ -136,6 +135,6 @@ export const createAndAddArtistMint = async ({
   }
 };
 
-createAndAddArtistMint({
-  domain: "music.decibbl.com",
+createArtist({
+  platform: new PublicKey(process.argv[2]),
 });

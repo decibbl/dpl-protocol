@@ -1,7 +1,7 @@
 import { Workspace, connection } from "..";
 import { initializeKeypair } from "../initializeKeypair";
 
-export const getPlatform = async () => {
+export const getPlatforms = async () => {
   try {
     const authority = await initializeKeypair(connection, "platform1");
     const workspace = new Workspace(authority);
@@ -12,4 +12,4 @@ export const getPlatform = async () => {
   }
 };
 
-getPlatform();
+getPlatforms();

@@ -190,7 +190,7 @@ pub fn mint_asset_with_signer<'info>(
         .sysvar_instructions(sysvar_instructions.key())
         .spl_token_program(token_program.key())
         .build(CreateArgs::V1 {
-            asset_data,
+            asset_data: asset_data.clone(),
             decimals: Some(0),
             print_supply: Some(PrintSupply::Zero),
         })
@@ -245,7 +245,33 @@ pub fn mint_asset_with_signer<'info>(
         &[signer_seeds],
     )?;
 
-    let verify_ix = VerifyBuilder::new()
+    if !asset_data.creators.unwrap()[0].verified {
+        let verify_creator_ix = VerifyBuilder::new()
+            .authority(collection_authority.key())
+            .metadata(metadata.key())
+            .collection_mint(collection_mint.key())
+            .collection_metadata(collection_metadata.key())
+            .collection_master_edition(collection_master_edition.key())
+            .sysvar_instructions(sysvar_instructions.key())
+            .build(VerificationArgs::CreatorV1)
+            .unwrap()
+            .instruction();
+
+        invoke_signed(
+            &verify_creator_ix,
+            &[
+                collection_authority.clone(),
+                metadata.clone(),
+                collection_mint.clone(),
+                collection_metadata.clone(),
+                collection_master_edition.clone(),
+                sysvar_instructions.clone(),
+            ],
+            &[signer_seeds],
+        )?;
+    }
+
+    let verify_collection_ix = VerifyBuilder::new()
         .authority(collection_authority.key())
         .metadata(metadata.key())
         .collection_mint(collection_mint.key())
@@ -257,7 +283,7 @@ pub fn mint_asset_with_signer<'info>(
         .instruction();
 
     invoke_signed(
-        &verify_ix,
+        &verify_collection_ix,
         &[
             collection_authority.clone(),
             metadata.clone(),

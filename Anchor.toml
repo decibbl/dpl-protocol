@@ -26,10 +26,14 @@ deploy-idl = "ts-node ./scripts/deployIdl.ts"
 ipfs = "ts-node ./scripts/ipfs/index.ts"
 
 # platform
-get-platform = "ts-node ./scripts/platform/getPlatform.ts"
+get-platforms = "ts-node ./scripts/platform/getPlatforms.ts"
 create-platform = "ts-node ./scripts/platform/createPlatform.ts"
 create-platform-artist = "ts-node ./scripts/platform/createAndAddArtistMint.ts"
 create-platform-user = "ts-node ./scripts/platform/createAndAddUserMint.ts"
 add-supported-token-details = "ts-node ./scripts/platform/addSupportedTokenDetails.ts"
 add-subscription-plan = "ts-node ./scripts/platform/addSubscriptionPlan.ts"
 update-subscription-plan = "ts-node ./scripts/platform/updateSubscriptionPlan.ts"
+
+#artist
+get-artists = "ts-node ./scripts/artist/getArtists.ts"
+create-artist = "ts-node ./scripts/artist/createArtist.ts"

@@ -74,6 +74,13 @@ export class Workspace {
       this.programId
     )[0];
 
+  /** Finds the Platform PDA of a given domain & authority address. */
+  findArtistPda = (authority: PublicKey) =>
+    PublicKey.findProgramAddressSync(
+      [Buffer.from(this.ARTIST_PREFIX), authority.toBuffer()],
+      this.programId
+    )[0];
+
   /** Finds the Metadata PDA of a given mint address. */
   findMetadataPda = (mint: PublicKey) => {
     return PublicKey.findProgramAddressSync(
