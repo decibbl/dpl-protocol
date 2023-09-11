@@ -4,8 +4,11 @@ use anchor_lang::{
 };
 use mpl_token_metadata::{
     instruction::{
-        builders::{CreateBuilder, DelegateBuilder, LockBuilder, MintBuilder, VerifyBuilder},
-        CreateArgs, DelegateArgs, InstructionBuilder, LockArgs, MintArgs, VerificationArgs,
+        builders::{
+            CreateBuilder, DelegateBuilder, LockBuilder, MintBuilder, PrintBuilder, VerifyBuilder,
+        },
+        CreateArgs, DelegateArgs, InstructionBuilder, LockArgs, MintArgs, PrintArgs,
+        VerificationArgs,
     },
     state::{AssetData, PrintSupply},
 };
@@ -176,6 +179,7 @@ pub fn mint_asset_with_signer<'info>(
     collection_metadata: &AccountInfo<'info>,
     collection_master_edition: &AccountInfo<'info>,
     collection_authority: &AccountInfo<'info>,
+    print_supply: Option<PrintSupply>,
     signer_seeds: &[&[u8]],
 ) -> Result<()> {
     let create_ix = CreateBuilder::new()
@@ -192,7 +196,7 @@ pub fn mint_asset_with_signer<'info>(
         .build(CreateArgs::V1 {
             asset_data: asset_data.clone(),
             decimals: Some(0),
-            print_supply: Some(PrintSupply::Zero),
+            print_supply,
         })
         .unwrap()
         .instruction();
@@ -353,6 +357,77 @@ pub fn mint_asset_with_signer<'info>(
             payer.clone(),
             sysvar_instructions.clone(),
             token_program.clone(),
+        ],
+        &[signer_seeds],
+    )?;
+
+    Ok(())
+}
+
+pub fn print_asset_with_signer<'info>(
+    edition_metadata: &AccountInfo<'info>,
+    edition: &AccountInfo<'info>,
+    edition_mint: &AccountInfo<'info>,
+    owner: &AccountInfo<'info>,
+    edition_token_account: &AccountInfo<'info>,
+    edition_mint_authority: &AccountInfo<'info>,
+    master_edition: &AccountInfo<'info>,
+    edition_marker_pda: &AccountInfo<'info>,
+    payer: &AccountInfo<'info>,
+    authority: &AccountInfo<'info>,
+    master_token_account: &AccountInfo<'info>,
+    master_metadata: &AccountInfo<'info>,
+    update_authority: &AccountInfo<'info>,
+    token_program: &AccountInfo<'info>,
+    associated_token_program: &AccountInfo<'info>,
+    sysvar_instructions: &AccountInfo<'info>,
+    system_program: &AccountInfo<'info>,
+    signer_seeds: &[&[u8]],
+    print_args: PrintArgs,
+) -> Result<()> {
+    let print_ix = PrintBuilder::new()
+        .edition_metadata(edition_metadata.key())
+        .edition(edition.key())
+        .edition_mint(edition_mint.key())
+        .edition_token_account_owner(owner.key())
+        .edition_token_account(edition_token_account.key())
+        .edition_mint_authority(edition_mint_authority.key())
+        .master_edition(master_edition.key())
+        .edition_marker_pda(edition_marker_pda.key())
+        .payer(authority.key())
+        .master_token_account_owner(authority.key())
+        .master_token_account(master_token_account.key())
+        .master_metadata(master_metadata.key())
+        .update_authority(update_authority.key())
+        .spl_token_program(token_program.key())
+        .spl_ata_program(associated_token_program.key())
+        .sysvar_instructions(sysvar_instructions.key())
+        .system_program(system_program.key())
+        .initialize_mint(true)
+        .build(print_args.clone())
+        .unwrap()
+        .instruction();
+
+    invoke_signed(
+        &print_ix,
+        &[
+            edition_metadata.clone(),
+            edition.clone(),
+            edition_mint.clone(),
+            owner.clone(),
+            edition_token_account.clone(),
+            edition_mint_authority.clone(),
+            master_edition.clone(),
+            edition_marker_pda.clone(),
+            payer.clone(),
+            authority.clone(),
+            master_token_account.clone(),
+            master_metadata.clone(),
+            update_authority.clone(),
+            token_program.clone(),
+            associated_token_program.clone(),
+            sysvar_instructions.clone(),
+            system_program.clone(),
         ],
         &[signer_seeds],
     )?;

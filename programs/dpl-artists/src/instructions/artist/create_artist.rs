@@ -1,6 +1,6 @@
 use anchor_lang::prelude::*;
 use anchor_spl::token::{Mint, Token};
-use mpl_token_metadata::state::AssetData;
+use mpl_token_metadata::state::{AssetData, PrintSupply};
 
 use crate::{
     constants::{ARTIST_SEED, PLATFORM_SEED},
@@ -114,6 +114,7 @@ pub fn create_artist_handler(ctx: Context<CreateArtist>, asset_data: AssetData) 
         &ctx.accounts.collection_metadata,
         &ctx.accounts.collection_master_edition,
         &ctx.accounts.platform.to_account_info(),
+        Some(PrintSupply::Zero),
         &signer_seeds,
     )?;
 

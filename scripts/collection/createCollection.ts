@@ -32,7 +32,7 @@ export const createCollection = async ({
       authority.publicKey,
       mint.publicKey
     );
-    console.log("Collection:", artist.toBase58());
+    console.log("Collection:", collection.toBase58());
 
     const tokenAccount = getAssociatedTokenAddressSync(
       mint.publicKey,

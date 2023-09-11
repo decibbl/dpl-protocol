@@ -5,8 +5,11 @@ pub mod states;
 pub mod utils;
 
 use crate::states::platform::SubscriptionPlan;
-use mpl_token_metadata::state::AssetData;
-use {anchor_lang::prelude::*, artist::*, instructions::*, platform::*, collection::*, artwork::*};
+use mpl_token_metadata::{
+    instruction::PrintArgs,
+    state::{AssetData, PrintSupply},
+};
+use {anchor_lang::prelude::*, artist::*, artwork::*, collection::*, instructions::*, platform::*};
 
 declare_id!("ywpMZZNG3Nx1Bu2deJCcNxzUUoWSm6YwN9r9jCF8art");
 
@@ -64,8 +67,16 @@ pub mod dpl_artists {
         collection::create_collection_handler(ctx, asset_data)
     }
 
-    pub fn create_artwork(ctx: Context<CreateArtwork>, asset_data: AssetData, is_collection: bool) -> Result<()> {
-        artwork::create_artwork_handler(ctx, asset_data, is_collection)
+    pub fn create_artwork(
+        ctx: Context<CreateArtwork>,
+        asset_data: AssetData,
+        is_collection: bool,
+        print_supply: PrintSupply,
+    ) -> Result<()> {
+        artwork::create_artwork_handler(ctx, asset_data, is_collection, print_supply)
     }
 
+    pub fn print_artwork(ctx: Context<PrintEdition>, print_args: PrintArgs) -> Result<()> {
+        artwork::print_artwork_handler(ctx, print_args)
+    }
 }

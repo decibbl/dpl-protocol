@@ -128,6 +128,20 @@ export class Workspace {
   findEditionPda = (mint: PublicKey) => {
     return this.findMasterEditionPda(mint);
   };
+
+  /** Finds the Edition Marker PDA for given mint address & edition number. */
+  findEditionMarkerPda = (mint: PublicKey, edition: BN) => {
+    return PublicKey.findProgramAddressSync(
+      [
+        Buffer.from("metadata", "utf8"),
+        this.metadataProgramId.toBuffer(),
+        mint.toBuffer(),
+        Buffer.from("edition", "utf8"),
+        Buffer.from(edition.div(new BN(248)).toString()),
+      ],
+      this.metadataProgramId
+    )[0];
+  };
 }
 
 export const sleep = (seconds: number) =>

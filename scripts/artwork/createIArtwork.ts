@@ -70,7 +70,10 @@ export const createIArtwork = async ({ platform }: { platform: PublicKey }) => {
       symbol: jsonMetadata.symbol,
       uri,
       sellerFeeBasisPoints: 0,
-      creators: [{ address: authority.publicKey, share: 100, verified: true }],
+      creators: [
+        { address: authority.publicKey, share: 50, verified: true },
+        { address: Keypair.generate().publicKey, share: 50, verified: false },
+      ],
       primarySaleHappened: false,
       isMutable: true,
       tokenStandard: { nonFungible: {} },
@@ -101,7 +104,9 @@ export const createIArtwork = async ({ platform }: { platform: PublicKey }) => {
           collectionDetails: assetData.collectionDetails,
           ruleSet: assetData.ruleSet,
         },
-        true
+        true,
+        { limited: { "0": new BN(1) } }
+        // { unlimited: {} }
       )
       .accounts({
         artwork,

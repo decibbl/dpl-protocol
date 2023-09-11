@@ -110,7 +110,8 @@ export const createCArtwork = async ({
           collectionDetails: assetData.collectionDetails,
           ruleSet: assetData.ruleSet,
         },
-        true
+        true,
+        { zero: {} }
       )
       .accounts({
         artwork,

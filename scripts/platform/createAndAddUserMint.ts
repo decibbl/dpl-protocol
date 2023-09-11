@@ -39,7 +39,7 @@ export const createAndAddUserMint = async ({ domain }: { domain: string }) => {
     const jsonMetadata = {
       name: "Decibbl Music | User Mint",
       description: "User Mint for Decibbl Music Platform.",
-      symbol: "ART",
+      symbol: "USER",
     };
 
     const uri = await uploadMetadata(

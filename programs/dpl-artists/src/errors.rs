@@ -12,4 +12,6 @@ pub enum ArtistsErrors {
     NoSubscriptionPlans,
     #[msg("Subscription Plan not found")]
     SubscriptionPlanNotFound,
+    #[msg("Invalid mint")]
+    InvalidMint,
 }

@@ -43,7 +43,7 @@ export const createAndAddArtistMint = async ({
     const jsonMetadata = {
       name: "Decibbl Music | Artist Mint",
       description: "Artist Mint for Decibbl Music Platform.",
-      symbol: "ART",
+      symbol: "ARTIST",
     };
 
     const uri = await uploadMetadata(

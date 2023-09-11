@@ -85,3 +85,19 @@ pub struct AssetData {
     )]
     pub rule_set: Option<Pubkey>,
 }
+
+/// Represents the print supply of a non-fungible asset.
+#[derive(AnchorSerialize, AnchorDeserialize)]
+pub enum PrintSupply {
+    /// The asset does not have any prints.
+    Zero,
+    /// The asset has a limited amount of prints.
+    Limited(u64),
+    /// The asset has an unlimited amount of prints.
+    Unlimited,
+}
+
+#[derive(AnchorSerialize, AnchorDeserialize)]
+pub enum PrintArgs {
+    V1 { edition: u64 },
+}

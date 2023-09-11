@@ -1,13 +1,10 @@
 use anchor_lang::prelude::*;
 use anchor_spl::token::Token;
-use mpl_token_metadata::state::AssetData;
+use mpl_token_metadata::state::{AssetData, PrintSupply};
 
 use crate::{
-    constants::{COLLECTION_SEED, ARTIST_SEED},
-    states::{
-        artist::Artist,
-        platform::Platform, collection::Collection,
-    },
+    constants::{ARTIST_SEED, COLLECTION_SEED},
+    states::{artist::Artist, collection::Collection, platform::Platform},
     utils::{mint_asset_with_signer, TokenMetadata},
 };
 
@@ -26,7 +23,7 @@ pub struct CreateCollection<'info> {
         space = 8 + Collection::INIT_SPACE,
     )]
     pub collection: Box<Account<'info, Collection>>,
-    
+
     /// artist account
     #[account(
         has_one = authority,
@@ -85,7 +82,10 @@ pub struct CreateCollection<'info> {
     pub associated_token_program: AccountInfo<'info>,
 }
 
-pub fn create_collection_handler(ctx: Context<CreateCollection>, asset_data: AssetData) -> Result<()> {
+pub fn create_collection_handler(
+    ctx: Context<CreateCollection>,
+    asset_data: AssetData,
+) -> Result<()> {
     let collection = &mut ctx.accounts.collection;
 
     let signer_seeds = [
@@ -110,6 +110,7 @@ pub fn create_collection_handler(ctx: Context<CreateCollection>, asset_data: Ass
         &ctx.accounts.collection_metadata,
         &ctx.accounts.collection_master_edition,
         &ctx.accounts.authority.to_account_info(),
+        Some(PrintSupply::Zero),
         &signer_seeds,
     )?;
 

@@ -5,6 +5,7 @@
     },
     "dependencies": {
         "@coral-xyz/anchor": "^0.28.1-beta.1",
+        "@metaplex-foundation/js": "^0.19.4",
         "@metaplex-foundation/mpl-token-metadata": "^2.13.0",
         "@metaplex-foundation/umi": "^0.8.7",
         "@metaplex-foundation/umi-bundle-defaults": "^0.8.7",
