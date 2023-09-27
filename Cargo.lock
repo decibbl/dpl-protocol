@@ -638,7 +638,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "dpl-artists"
+name = "dpl-protocol"
 version = "0.1.0"
 dependencies = [
  "anchor-lang",

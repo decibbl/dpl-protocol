@@ -7,6 +7,7 @@ import { Workspace, connection, network } from "..";
 import { initializeKeypair } from "../initializeKeypair";
 import { Network, getUrls } from "../networks";
 import { BN } from "@coral-xyz/anchor";
+import { getAssociatedTokenAddressSync } from "@solana/spl-token";
 
 export const addSubscriptionPlan = async ({ domain }: { domain: string }) => {
   try {
@@ -16,11 +17,28 @@ export const addSubscriptionPlan = async ({ domain }: { domain: string }) => {
     const platform = workspace.findPlatformPda(domain, authority.publicKey);
     console.log("Platform:", platform.toBase58());
 
+    const platformState = await workspace.program.account.platform.fetch(
+      platform
+    );
+
+    const tokenMint = new PublicKey(
+      "4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU"
+    );
+
+    // const tokenAccount = getAssociatedTokenAddressSync(
+    //   tokenMint,
+    //   authority.publicKey
+    // );
+
     const addSubscriptionPlanInstruction = await workspace.program.methods
       .addSubscriptionPlan({ id: 1, duration: { four: {} }, price: new BN(1) })
       .accounts({
         platform,
         authority: authority.publicKey,
+        tokenMint: platformState.subscriptionDetails[0].mint,
+        tokenAccount: platformState.subscriptionDetails[0].tokenAccount,
+        // tokenMint: tokenMint,
+        // tokenAccount,
       })
       .signers([])
       .instruction();

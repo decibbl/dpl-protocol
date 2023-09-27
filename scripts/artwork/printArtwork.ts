@@ -1,5 +1,5 @@
 import { BN } from "@coral-xyz/anchor";
-import { MasterEditionV2 } from "@metaplex-foundation/mpl-token-metadata";
+import { fetchMasterEdition } from "@metaplex-foundation/mpl-token-metadata";
 import { getAssociatedTokenAddressSync } from "@solana/spl-token";
 import {
   ComputeBudgetProgram,
@@ -12,6 +12,8 @@ import {
 import { Workspace, connection, network } from "..";
 import { initializeKeypair } from "../initializeKeypair";
 import { Network, getUrls } from "../networks";
+import { createUmi } from "@metaplex-foundation/umi-bundle-defaults";
+import { fromWeb3JsPublicKey } from "@metaplex-foundation/umi-web3js-adapters";
 
 export const printArtwork = async ({
   platform,
@@ -23,6 +25,8 @@ export const printArtwork = async ({
   try {
     const authority = await initializeKeypair(connection, "artist1");
     const workspace = new Workspace(authority);
+
+    const umi = createUmi(connection.rpcEndpoint);
 
     const artist = workspace.findArtistPda(authority.publicKey);
     console.log("Artist:", artist.toBase58());
@@ -44,9 +48,14 @@ export const printArtwork = async ({
 
     const masterEdition = workspace.findMasterEditionPda(masterMint);
 
-    const masterEditionAccount = MasterEditionV2.deserialize(
-      (await connection.getAccountInfo(masterEdition)).data
-    )[0];
+    const masterEditionAccount = await fetchMasterEdition(
+      umi,
+      fromWeb3JsPublicKey(masterEdition)
+    );
+
+    // const masterEditionAccount = MasterEditionV2.deserialize(
+    //   (await connection.getAccountInfo(masterEdition)).data
+    // )[0];
 
     const editionMint = Keypair.generate();
     console.log("Edition Mint:", editionMint.publicKey.toBase58());

@@ -5,11 +5,11 @@ idl-gen = [
     "anchor-lang/idl-gen",
 ]
 [programs.localnet]
-dpl_artists = "ywpMZZNG3Nx1Bu2deJCcNxzUUoWSm6YwN9r9jCF8art"
+dpl_protocol = "ywpMZZNG3Nx1Bu2deJCcNxzUUoWSm6YwN9r9jCF8art"
 [programs.devnet]
-dpl_artists = "ywpMZZNG3Nx1Bu2deJCcNxzUUoWSm6YwN9r9jCF8art"
+dpl_protocol = "ywpMZZNG3Nx1Bu2deJCcNxzUUoWSm6YwN9r9jCF8art"
 [programs.mainnet]
-dpl_artists = "artMnyJqNruhMEAY1aibPNgFu68camwPhJ2nJyMEwgr"
+dpl_protocol = "artMnyJqNruhMEAY1aibPNgFu68camwPhJ2nJyMEwgr"
 
 [registry]
 url = "https://api.apr.dev"
@@ -24,6 +24,11 @@ test = "yarn run ts-mocha -p ./tsconfig.json -t 1000000 tests/**/*.ts"
 # utils
 deploy-idl = "ts-node ./scripts/deployIdl.ts"
 ipfs = "ts-node ./scripts/ipfs/index.ts"
+kinobi = "ts-node ./scripts/kinobi.ts"
+
+# token
+create-token = "ts-node ./scripts/token/createToken.ts"
+transfer-tokens = "ts-node ./scripts/token/transferTokens.ts"
 
 # platform
 get-platforms = "ts-node ./scripts/platform/getPlatforms.ts"
@@ -32,7 +37,7 @@ create-platform-artist = "ts-node ./scripts/platform/createAndAddArtistMint.ts"
 create-platform-user = "ts-node ./scripts/platform/createAndAddUserMint.ts"
 add-supported-token-details = "ts-node ./scripts/platform/addSupportedTokenDetails.ts"
 add-subscription-plan = "ts-node ./scripts/platform/addSubscriptionPlan.ts"
-update-subscription-plan = "ts-node ./scripts/platform/updateSubscriptionPlan.ts"
+update-subscription-details = "ts-node ./scripts/platform/updateSubscriptionDetails.ts"
 
 # artist
 get-artists = "ts-node ./scripts/artist/getArtists.ts"
@@ -47,3 +52,11 @@ get-artworks = "ts-node ./scripts/artwork/getArtworks.ts"
 create-c-artwork = "ts-node ./scripts/artwork/createCArtwork.ts"
 create-i-artwork = "ts-node ./scripts/artwork/createIArtwork.ts"
 print-artwork = "ts-node ./scripts/artwork/printArtwork.ts"
+
+# user
+get-users = "ts-node ./scripts/user/getUsers.ts"
+create-user = "ts-node ./scripts/user/createUser.ts"
+subscribe = "ts-node ./scripts/user/subscribe.ts"
+unsubscribe = "ts-node ./scripts/user/unsubscribe.ts"
+renewal = "ts-node ./scripts/user/renewal.ts"
+approve-renewal = "ts-node ./scripts/user/approveRenewal.ts"

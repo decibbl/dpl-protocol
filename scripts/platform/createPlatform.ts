@@ -1,21 +1,16 @@
+import { BN } from "@coral-xyz/anchor";
+import { getAssociatedTokenAddressSync } from "@solana/spl-token";
 import {
   ComputeBudgetProgram,
   Keypair,
   SYSVAR_INSTRUCTIONS_PUBKEY,
   TransactionMessage,
   VersionedTransaction,
-  sendAndConfirmTransaction,
 } from "@solana/web3.js";
 import { Workspace, connection, network } from "..";
 import { initializeKeypair } from "../initializeKeypair";
-import { getAssociatedTokenAddressSync } from "@solana/spl-token";
-import { Network, getUrls } from "../networks";
-import {
-  AssetData,
-  TokenStandard,
-} from "@metaplex-foundation/mpl-token-metadata";
 import { uploadMetadata } from "../ipfs";
-import { BN } from "@coral-xyz/anchor";
+import { Network, getUrls } from "../networks";
 
 export const createPlatform = async ({ domain }: { domain: string }) => {
   try {
@@ -69,7 +64,7 @@ export const createPlatform = async ({ domain }: { domain: string }) => {
 
     const modifyComputeUnitsInstruction =
       ComputeBudgetProgram.setComputeUnitLimit({
-        units: 300000,
+        units: 350000,
       });
 
     const createPlatformInstruction = await workspace.program.methods

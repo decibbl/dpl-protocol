@@ -10,8 +10,10 @@ import { getAssociatedTokenAddressSync } from "@solana/spl-token";
 
 export const addSupportedTokenDetails = async ({
   domain,
+  tokenMint,
 }: {
   domain: string;
+  tokenMint: PublicKey;
 }) => {
   try {
     const authority = await initializeKeypair(connection, "platform1");
@@ -24,9 +26,9 @@ export const addSupportedTokenDetails = async ({
     //   "So11111111111111111111111111111111111111112"
     // );
 
-    const tokenMint = new PublicKey(
-      "4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU"
-    );
+    // const tokenMint = new PublicKey(
+    //   "4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU"
+    // );
 
     const tokenAccount = getAssociatedTokenAddressSync(
       tokenMint,
@@ -66,4 +68,7 @@ export const addSupportedTokenDetails = async ({
   }
 };
 
-addSupportedTokenDetails({ domain: "music.decibbl.com" });
+addSupportedTokenDetails({
+  domain: "music.decibbl.com",
+  tokenMint: new PublicKey(process.argv[2]),
+});

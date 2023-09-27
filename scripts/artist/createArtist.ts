@@ -110,7 +110,7 @@ export const createArtist = async ({ platform }: { platform: PublicKey }) => {
         collectionMetadata,
         collectionMasterEdition,
         collectionAuthority: fetchedPlatform.authority,
-        tokenMint: fetchedPlatform.supportedTokens[0].mint,
+        tokenMint: fetchedPlatform.subscriptionDetails[0].mint,
       })
       .signers([])
       .instruction();

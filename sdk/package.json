@@ -1,0 +1,18 @@
+{
+  "name": "@decibbl/protocol-sdk",
+  "version": "0.0.2",
+  "description": "Decibbl Protocol SDK",
+  "license": "SEE LICENSE IN LICENSE",
+  "scripts": {},
+  "dependencies": {
+    "@metaplex-foundation/mpl-token-metadata": "^3.1.0",
+    "@metaplex-foundation/mpl-toolbox": "^0.9.1",
+    "@metaplex-foundation/umi": "^0.8.9",
+    "@metaplex-foundation/umi-bundle-defaults": "^0.8.9",
+    "@metaplex-foundation/umi-signer-wallet-adapters": "^0.8.9",
+    "@metaplex-foundation/umi-uploader-nft-storage": "^0.8.7",
+    "@metaplex-foundation/umi-web3js-adapters": "^0.8.9"
+  },
+  "main": "index.ts",
+  "author": ""
+}

@@ -1,4 +1,4 @@
-import idl from "../target/idl/dpl_artists.json";
+import idl from "../target/idl/dpl_protocol.json";
 import {
   Connection,
   Keypair,
@@ -8,7 +8,7 @@ import {
 } from "@solana/web3.js";
 import { Network, getUrls } from "./networks";
 import { AnchorProvider, BN, Program } from "@coral-xyz/anchor";
-import { DplArtists, IDL } from "../target/types/dpl_artists";
+import { DplProtocol, IDL } from "../target/types/dpl_protocol";
 import * as dotenv from "dotenv";
 
 dotenv.config();
@@ -17,7 +17,7 @@ dotenv.config();
 export const network = AnchorProvider.env().connection.rpcEndpoint;
 
 // @ts-ignore
-export const DBL_ARTIST_PROGRAM_ADDRESS = idl.metadata.address
+export const DBL_PROTOCOL_PROGRAM_ADDRESS = idl.metadata.address
   ? // @ts-ignore
     new PublicKey(idl?.metadata.address)
   : new PublicKey("ywpMZZNG3Nx1Bu2deJCcNxzUUoWSm6YwN9r9jCF8art");
@@ -44,10 +44,11 @@ export const connection = new Connection(getUrls(Network[network]).rpc);
 export class Workspace {
   provider: AnchorProvider;
   programId: PublicKey;
-  program: Program<DplArtists>;
+  program: Program<DplProtocol>;
   connection: Connection;
   PLATFORM_PREFIX = "platform";
   ARTIST_PREFIX = "artist";
+  USER_PREFIX = "user";
   COLLECTION_PREFIX = "collection";
   ARTWORK_PREFIX = "artwork";
 
@@ -59,7 +60,7 @@ export class Workspace {
     this.provider = new AnchorProvider(connection, new Wallet(keypair), {});
     // @ts-ignore
     this.programId = new PublicKey(idl.metadata.address);
-    this.program = new Program<DplArtists>(IDL, this.programId, this.provider);
+    this.program = new Program<DplProtocol>(IDL, this.programId, this.provider);
     this.connection = this.provider.connection;
   }
 
@@ -78,6 +79,13 @@ export class Workspace {
   findArtistPda = (authority: PublicKey) =>
     PublicKey.findProgramAddressSync(
       [Buffer.from(this.ARTIST_PREFIX), authority.toBuffer()],
+      this.programId
+    )[0];
+
+  /** Finds the User PDA for given authority address. */
+  findUserPda = (authority: PublicKey) =>
+    PublicKey.findProgramAddressSync(
+      [Buffer.from(this.USER_PREFIX), authority.toBuffer()],
       this.programId
     )[0];
 

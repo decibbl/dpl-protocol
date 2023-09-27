@@ -105,7 +105,7 @@ export const createIArtwork = async ({ platform }: { platform: PublicKey }) => {
           ruleSet: assetData.ruleSet,
         },
         true,
-        { limited: { "0": new BN(1) } }
+        { limited: { "0": new BN(2) } }
         // { unlimited: {} }
       )
       .accounts({
