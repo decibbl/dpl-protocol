@@ -1,4 +1,4 @@
-import idl from "../target/idl/dpl_protocol.json";
+import { AnchorProvider, BN, Program } from "@coral-xyz/anchor";
 import {
   Connection,
   Keypair,
@@ -6,10 +6,11 @@ import {
   Transaction,
   VersionedTransaction,
 } from "@solana/web3.js";
-import { Network, getUrls } from "./networks";
-import { AnchorProvider, BN, Program } from "@coral-xyz/anchor";
-import { DplProtocol, IDL } from "../target/types/dpl_protocol";
 import * as dotenv from "dotenv";
+import fs from "fs";
+import idl from "../target/idl/dpl_protocol.json";
+import { DplProtocol, IDL } from "../target/types/dpl_protocol";
+import { Network, getUrls } from "./networks";
 
 dotenv.config();
 
@@ -49,6 +50,7 @@ export class Workspace {
   PLATFORM_PREFIX = "platform";
   ARTIST_PREFIX = "artist";
   USER_PREFIX = "user";
+  LIST_PREFIX = "list";
   COLLECTION_PREFIX = "collection";
   ARTWORK_PREFIX = "artwork";
 
@@ -107,6 +109,17 @@ export class Workspace {
       this.programId
     )[0];
 
+  /** Finds the List PDA for given start timestamp & authority address. */
+  findListPda = (authority: PublicKey, startTimestamp: BN) =>
+    PublicKey.findProgramAddressSync(
+      [
+        Buffer.from(this.LIST_PREFIX),
+        authority.toBuffer(),
+        startTimestamp.toBuffer("le", 8),
+      ],
+      this.programId
+    )[0];
+
   /** Finds the Metadata PDA for given mint address. */
   findMetadataPda = (mint: PublicKey) => {
     return PublicKey.findProgramAddressSync(
@@ -154,3 +167,7 @@ export class Workspace {
 
 export const sleep = (seconds: number) =>
   new Promise((resolve) => setTimeout(resolve, seconds * 1000));
+
+export const saveLogs = (errorLogs: any) => {
+  fs.writeFileSync("./target/logs.json", JSON.stringify(errorLogs));
+};

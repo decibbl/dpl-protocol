@@ -1,6 +1,6 @@
 {
   "name": "@decibbl/protocol-sdk",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Decibbl Protocol SDK",
   "license": "SEE LICENSE IN LICENSE",
   "scripts": {},

@@ -5,10 +5,11 @@ use anchor_lang::{
 use mpl_token_metadata::{
     instruction::{
         builders::{
-            CreateBuilder, DelegateBuilder, LockBuilder, MintBuilder, PrintBuilder, VerifyBuilder,
+            BurnBuilder, CreateBuilder, DelegateBuilder, LockBuilder, MintBuilder, PrintBuilder,
+            TransferBuilder, VerifyBuilder,
         },
-        CreateArgs, DelegateArgs, InstructionBuilder, LockArgs, MintArgs, PrintArgs,
-        VerificationArgs,
+        BurnArgs, CreateArgs, DelegateArgs, InstructionBuilder, LockArgs, MintArgs, PrintArgs,
+        TransferArgs, VerificationArgs,
     },
     state::{AssetData, PrintSupply},
 };
@@ -163,7 +164,7 @@ pub fn mint_asset<'info>(
     Ok(())
 }
 
-pub fn mint_asset_with_signer<'info>(
+pub fn mint_asset_with_signer_and_collection<'info>(
     asset_data: AssetData,
     metadata: &AccountInfo<'info>,
     master_edition: &AccountInfo<'info>,
@@ -432,5 +433,182 @@ pub fn print_asset_with_signer<'info>(
         &[signer_seeds],
     )?;
 
+    Ok(())
+}
+
+pub fn mint_asset_with_signer<'info>(
+    asset_data: AssetData,
+    metadata: &AccountInfo<'info>,
+    master_edition: &AccountInfo<'info>,
+    mint: &AccountInfo<'info>,
+    authority: &AccountInfo<'info>,
+    update_authority: &AccountInfo<'info>,
+    token_account: &AccountInfo<'info>,
+    token_owner: &AccountInfo<'info>,
+    payer: &AccountInfo<'info>,
+    sysvar_instructions: &AccountInfo<'info>,
+    token_program: &AccountInfo<'info>,
+    signer_seeds: &[&[u8]],
+) -> Result<()> {
+    let create_ix = CreateBuilder::new()
+        .metadata(metadata.key())
+        .master_edition(master_edition.key())
+        .mint(mint.key())
+        .authority(authority.key())
+        .update_authority(update_authority.key())
+        .initialize_mint(true)
+        .update_authority_as_signer(true)
+        .payer(payer.key())
+        .sysvar_instructions(sysvar_instructions.key())
+        .spl_token_program(token_program.key())
+        .build(CreateArgs::V1 {
+            asset_data,
+            decimals: Some(0),
+            print_supply: Some(PrintSupply::Zero),
+        })
+        .unwrap()
+        .instruction();
+
+    invoke_signed(
+        &create_ix,
+        &[
+            metadata.clone(),
+            master_edition.clone(),
+            mint.clone(),
+            authority.clone(),
+            update_authority.clone(),
+            payer.clone(),
+            sysvar_instructions.clone(),
+            token_program.clone(),
+        ],
+        &[signer_seeds],
+    )?;
+
+    let mint_ix = MintBuilder::new()
+        .token(token_account.key())
+        .token_owner(token_owner.key())
+        .metadata(metadata.key())
+        .master_edition(master_edition.key())
+        .mint(mint.key())
+        .authority(authority.key())
+        .payer(payer.key())
+        .sysvar_instructions(sysvar_instructions.key())
+        .spl_token_program(token_program.key())
+        .build(MintArgs::V1 {
+            amount: 1,
+            authorization_data: None,
+        })
+        .unwrap()
+        .instruction();
+
+    invoke_signed(
+        &mint_ix,
+        &[
+            token_account.clone(),
+            token_owner.clone(),
+            metadata.clone(),
+            master_edition.clone(),
+            mint.clone(),
+            authority.clone(),
+            payer.clone(),
+            sysvar_instructions.clone(),
+            token_program.clone(),
+        ],
+        &[signer_seeds],
+    )?;
+
+    Ok(())
+}
+
+pub fn burn_asset_with_signer<'info>(
+    metadata: &AccountInfo<'info>,
+    master_edition: &AccountInfo<'info>,
+    mint: &AccountInfo<'info>,
+    authority: &AccountInfo<'info>,
+    token_account: &AccountInfo<'info>,
+    sysvar_instructions: &AccountInfo<'info>,
+    token_program: &AccountInfo<'info>,
+    signer_seeds: &[&[u8]],
+) -> Result<()> {
+    let burn_ix = BurnBuilder::new()
+        .authority(authority.key())
+        .metadata(metadata.key())
+        .mint(mint.key())
+        .token(token_account.key())
+        // .master_edition(master_edition.key())
+        .edition(master_edition.key())
+        .spl_token_program(token_program.key())
+        .sysvar_instructions(sysvar_instructions.key())
+        .build(BurnArgs::V1 { amount: 1 })
+        .unwrap()
+        .instruction();
+
+    invoke_signed(
+        &burn_ix,
+        &[
+            authority.clone(),
+            metadata.clone(),
+            mint.clone(),
+            token_account.clone(),
+            master_edition.clone(),
+            token_program.clone(),
+            sysvar_instructions.clone(),
+        ],
+        &[signer_seeds],
+    )?;
+
+    Ok(())
+}
+
+pub fn transfer_asset_with_signer<'info>(
+    metadata: &AccountInfo<'info>,
+    mint: &AccountInfo<'info>,
+    authority: &AccountInfo<'info>,
+    token_account: &AccountInfo<'info>,
+    token_owner: &AccountInfo<'info>,
+    destination: &AccountInfo<'info>,
+    destination_owner: &AccountInfo<'info>,
+    payer: &AccountInfo<'info>,
+    sysvar_instructions: &AccountInfo<'info>,
+    token_program: &AccountInfo<'info>,
+    associated_token_program: &AccountInfo<'info>,
+    signer_seeds: &[&[u8]],
+) -> Result<()> {
+    let transfer_ix = TransferBuilder::new()
+        .token(token_account.key())
+        .token_owner(token_owner.key())
+        .destination(destination.key())
+        .destination_owner(destination_owner.key())
+        .mint(mint.key())
+        .metadata(metadata.key())
+        .authority(authority.key())
+        .payer(payer.key())
+        .sysvar_instructions(sysvar_instructions.key())
+        .spl_token_program(token_program.key())
+        .spl_ata_program(associated_token_program.key())
+        .build(TransferArgs::V1 {
+            amount: 1,
+            authorization_data: None,
+        })
+        .unwrap()
+        .instruction();
+
+    invoke_signed(
+        &transfer_ix,
+        &[
+            token_account.clone(),
+            token_owner.clone(),
+            destination.clone(),
+            destination_owner.clone(),
+            mint.clone(),
+            metadata.clone(),
+            authority.clone(),
+            payer.clone(),
+            sysvar_instructions.clone(),
+            token_program.clone(),
+            associated_token_program.clone(),
+        ],
+        &[signer_seeds],
+    )?;
     Ok(())
 }

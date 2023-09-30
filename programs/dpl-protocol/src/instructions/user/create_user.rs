@@ -2,10 +2,10 @@ use anchor_lang::prelude::*;
 use anchor_spl::token::Token;
 use mpl_token_metadata::state::{AssetData, PrintSupply};
 
-use crate::constants::{USER_SEED, PLATFORM_SEED};
+use crate::constants::{PLATFORM_SEED, USER_SEED};
 use crate::states::platform::Platform;
 use crate::states::user::{SubscriptionPlanDetails, User};
-use crate::utils::{mint_asset_with_signer, TokenMetadata};
+use crate::utils::{mint_asset_with_signer_and_collection, TokenMetadata};
 
 #[derive(Accounts)]
 pub struct CreateUser<'info> {
@@ -92,7 +92,7 @@ pub fn create_user_handler(ctx: Context<CreateUser>, asset_data: AssetData) -> R
         &[*ctx.bumps.get("platform").unwrap()],
     ];
 
-    mint_asset_with_signer(
+    mint_asset_with_signer_and_collection(
         asset_data,
         &ctx.accounts.metadata,
         &ctx.accounts.master_edition,
@@ -114,6 +114,7 @@ pub fn create_user_handler(ctx: Context<CreateUser>, asset_data: AssetData) -> R
 
     user.authority = ctx.accounts.authority.key();
     user.mint = ctx.accounts.mint.key();
+    user.platform = ctx.accounts.platform.key();
     user.subscription = SubscriptionPlanDetails {
         ..Default::default()
     };

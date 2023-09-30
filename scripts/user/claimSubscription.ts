@@ -1,7 +1,10 @@
 import { BN } from "@coral-xyz/anchor";
 import { getAssociatedTokenAddressSync } from "@solana/spl-token";
 import {
+  ComputeBudgetProgram,
+  Keypair,
   PublicKey,
+  SYSVAR_INSTRUCTIONS_PUBKEY,
   TransactionMessage,
   VersionedTransaction,
 } from "@solana/web3.js";
@@ -9,15 +12,16 @@ import { Workspace, connection, network } from "..";
 import { initializeKeypair } from "../initializeKeypair";
 import { Network, getUrls } from "../networks";
 
-export const subscribe = async ({
+export const claimSubscription = async ({
   domain,
-  tokenMint,
+  list,
 }: {
   domain: string;
-  tokenMint: PublicKey;
+  list: PublicKey;
 }) => {
   try {
-    const authority = await initializeKeypair(connection, "user1");
+    const seller = await initializeKeypair(connection, "user1");
+    const authority = await initializeKeypair(connection, "user2");
     const platformAuthority = await initializeKeypair(connection, "platform1");
 
     const workspace = new Workspace(authority);
@@ -27,32 +31,42 @@ export const subscribe = async ({
       domain,
       platformAuthority.publicKey
     );
+    console.log("Platform:", platform.toBase58());
+
+    const listAccount = await workspace.program.account.list.fetch(list);
+
+    const mint = listAccount.mint;
+    console.log("Mint:", mint.toBase58());
 
     const tokenAccount = getAssociatedTokenAddressSync(
-      tokenMint,
+      mint,
       authority.publicKey
     );
 
-    const supportedTokenAccount = getAssociatedTokenAddressSync(
-      tokenMint,
-      platformAuthority.publicKey
-    );
+    const metadata = workspace.findMetadataPda(mint);
 
-    const subscribeInstruction = await workspace.program.methods
-      .subscribe({ id: 1, duration: { twentySix: {} }, price: new BN(1) })
+    const masterEdition = workspace.findMasterEditionPda(mint);
+
+    const claimSubscriptionInstruction = await workspace.program.methods
+      .claimSubscription(listAccount.startTimestamp)
       .accounts({
+        list,
         platform,
         user,
-        authority: authority.publicKey,
-        userTokenAccount: tokenAccount,
-        supportedTokenAccount,
-        supportedTokenMint: tokenMint,
+        buyer: authority.publicKey,
+        seller: seller.publicKey,
+        mint,
+        tokenAccount,
+        metadata,
+        masterEdition,
+        metadataTokenProgram: workspace.metadataProgramId,
+        sysvarInstructions: SYSVAR_INSTRUCTIONS_PUBKEY,
       })
       .signers([])
       .instruction();
 
     const messageV0 = new TransactionMessage({
-      instructions: [subscribeInstruction],
+      instructions: [claimSubscriptionInstruction],
       payerKey: authority.publicKey,
       recentBlockhash: (await connection.getLatestBlockhash()).blockhash,
     }).compileToV0Message();
@@ -63,7 +77,7 @@ export const subscribe = async ({
     const signature = await connection.sendTransaction(transaction, {});
 
     console.log(
-      "Subscribe Signature:",
+      "Claim Subscription Signature:",
       getUrls(Network[network], signature, "tx").explorer
     );
   } catch (error) {
@@ -71,7 +85,7 @@ export const subscribe = async ({
   }
 };
 
-subscribe({
+claimSubscription({
   domain: "music.decibbl.com",
-  tokenMint: new PublicKey(process.argv[2]),
+  list: new PublicKey(process.argv[2]),
 });

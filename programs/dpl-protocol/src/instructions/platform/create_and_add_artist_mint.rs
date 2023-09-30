@@ -5,7 +5,7 @@ use mpl_token_metadata::state::{AssetData, PrintSupply};
 use crate::{
     constants::PLATFORM_SEED,
     states::platform::Platform,
-    utils::{mint_asset_with_signer, TokenMetadata},
+    utils::{mint_asset_with_signer_and_collection, TokenMetadata},
 };
 
 #[derive(Accounts)]
@@ -85,7 +85,7 @@ pub fn create_and_add_artist_mint_handler(
         &[*ctx.bumps.get("platform").unwrap()],
     ];
 
-    mint_asset_with_signer(
+    mint_asset_with_signer_and_collection(
         asset_data,
         &ctx.accounts.metadata,
         &ctx.accounts.master_edition,

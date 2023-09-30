@@ -40,14 +40,21 @@ pub fn add_subscription_plan_handler(
     }
 
     for subscription_detail in &platform.subscription_details {
-        if subscription_detail.mint != ctx.accounts.token_mint.key() || subscription_detail.token_account != ctx.accounts.token_account.key() {
-            return err!(ProtocolErrors::SupportedTokenNotFound)
+        if subscription_detail.mint != ctx.accounts.token_mint.key()
+            || subscription_detail.token_account != ctx.accounts.token_account.key()
+        {
+            return err!(ProtocolErrors::SupportedTokenNotFound);
         }
     }
 
-    let index = platform.subscription_details.binary_search_by(|s| s.mint.cmp(&ctx.accounts.token_mint.key())).unwrap();
+    let index = platform
+        .subscription_details
+        .binary_search_by(|s| s.mint.cmp(&ctx.accounts.token_mint.key()))
+        .unwrap();
 
-    platform.subscription_details[index].subscription_plans.push(plan);
+    platform.subscription_details[index]
+        .subscription_plans
+        .push(plan);
 
     // require!(
     //     !platform.subscription_plans.iter().any(|p| p.id == plan.id),

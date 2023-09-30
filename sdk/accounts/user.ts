@@ -41,6 +41,8 @@ export type UserAccountData = {
   authority: PublicKey;
   /** non-transferable mint account */
   mint: PublicKey;
+  /** platform which user belongs to */
+  platform: PublicKey;
   /** subscription details */
   subscription: SubscriptionPlanDetails;
 };
@@ -50,6 +52,8 @@ export type UserAccountDataArgs = {
   authority: PublicKey;
   /** non-transferable mint account */
   mint: PublicKey;
+  /** platform which user belongs to */
+  platform: PublicKey;
   /** subscription details */
   subscription: SubscriptionPlanDetailsArgs;
 };
@@ -64,6 +68,7 @@ export function getUserAccountDataSerializer(): Serializer<
         ['discriminator', array(u8(), { size: 8 })],
         ['authority', publicKeySerializer()],
         ['mint', publicKeySerializer()],
+        ['platform', publicKeySerializer()],
         ['subscription', getSubscriptionPlanDetailsSerializer()],
       ],
       { description: 'UserAccountData' }
@@ -143,17 +148,19 @@ export function getUserGpaBuilder(context: Pick<Context, 'rpc' | 'programs'>) {
       discriminator: Array<number>;
       authority: PublicKey;
       mint: PublicKey;
+      platform: PublicKey;
       subscription: SubscriptionPlanDetailsArgs;
     }>({
       discriminator: [0, array(u8(), { size: 8 })],
       authority: [8, publicKeySerializer()],
       mint: [40, publicKeySerializer()],
-      subscription: [72, getSubscriptionPlanDetailsSerializer()],
+      platform: [72, publicKeySerializer()],
+      subscription: [104, getSubscriptionPlanDetailsSerializer()],
     })
     .deserializeUsing<User>((account) => deserializeUser(account))
     .whereField('discriminator', [159, 117, 95, 227, 239, 151, 58, 236]);
 }
 
 export function getUserSize(): number {
-  return 130;
+  return 162;
 }

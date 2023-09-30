@@ -4,12 +4,15 @@ pub mod instructions;
 pub mod states;
 pub mod utils;
 
-use crate::states::platform::{SubscriptionPlan, SubscriptionDetails};
+use crate::states::platform::{SubscriptionDetails, SubscriptionPlan};
 use mpl_token_metadata::{
     instruction::PrintArgs,
     state::{AssetData, PrintSupply},
 };
-use {anchor_lang::prelude::*, artist::*, artwork::*, collection::*, instructions::*, platform::*, user::*};
+use {
+    anchor_lang::prelude::*, artist::*, artwork::*, collection::*, instructions::*, platform::*,
+    user::*,
+};
 
 declare_id!("ywpMZZNG3Nx1Bu2deJCcNxzUUoWSm6YwN9r9jCF8art");
 
@@ -102,5 +105,33 @@ pub mod dpl_protocol {
     // TODO: Need more improvements
     pub fn approve_renewal(ctx: Context<ApproveRenewal>) -> Result<()> {
         user::approve_renewal_handler(ctx)
+    }
+
+    // user: marketplace
+    pub fn list_subscription(
+        ctx: Context<ListSubscription>,
+        listing_starts_at: i64,
+        price: u64,
+        asset_data: AssetData,
+    ) -> Result<()> {
+        user::list_subscription_handler(ctx, listing_starts_at, price, asset_data)
+    }
+
+    pub fn delist_subscription(
+        ctx: Context<DelistSubscription>,
+        listing_starts_at: i64,
+    ) -> Result<()> {
+        user::delist_subscription_handler(ctx, listing_starts_at)
+    }
+
+    pub fn sell_subscription(ctx: Context<SellSubscription>, listing_starts_at: i64) -> Result<()> {
+        user::sell_subscription_handler(ctx, listing_starts_at)
+    }
+
+    pub fn claim_subscription(
+        ctx: Context<ClaimSubscription>,
+        listing_starts_at: i64,
+    ) -> Result<()> {
+        user::claim_subscription_handler(ctx, listing_starts_at)
     }
 }

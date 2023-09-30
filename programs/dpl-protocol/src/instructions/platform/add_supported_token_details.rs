@@ -45,8 +45,10 @@ pub fn add_supported_token_details_handler(ctx: Context<AddSupportedTokenDetails
     let platform = &mut ctx.accounts.platform;
 
     for subscription_detail in &platform.subscription_details {
-        if subscription_detail.mint == ctx.accounts.token_mint.key() || subscription_detail.token_account == ctx.accounts.token_account.key() {
-            return err!(ProtocolErrors::DuplicateSupportedTokenDetails)
+        if subscription_detail.mint == ctx.accounts.token_mint.key()
+            || subscription_detail.token_account == ctx.accounts.token_account.key()
+        {
+            return err!(ProtocolErrors::DuplicateSupportedTokenDetails);
         }
     }
 

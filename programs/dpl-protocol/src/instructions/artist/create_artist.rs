@@ -8,7 +8,7 @@ use crate::{
         artist::{Artist, PlatformDetails},
         platform::Platform,
     },
-    utils::{mint_asset_with_signer, TokenMetadata},
+    utils::{mint_asset_with_signer_and_collection, TokenMetadata},
 };
 
 #[derive(Accounts)]
@@ -98,7 +98,7 @@ pub fn create_artist_handler(ctx: Context<CreateArtist>, asset_data: AssetData) 
         &[*ctx.bumps.get("platform").unwrap()],
     ];
 
-    mint_asset_with_signer(
+    mint_asset_with_signer_and_collection(
         asset_data,
         &ctx.accounts.metadata,
         &ctx.accounts.master_edition,

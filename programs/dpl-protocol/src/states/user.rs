@@ -26,6 +26,36 @@ pub struct User {
     /// non-transferable mint account
     pub mint: Pubkey,
 
+    /// platform which user belongs to
+    pub platform: Pubkey,
+
     /// subscription details
     pub subscription: SubscriptionPlanDetails,
+}
+
+#[account]
+#[derive(InitSpace)]
+pub struct List {
+    /// authority who is listing
+    pub authority: Pubkey,
+
+    /// timestamp of when fractionalized subscription starts
+    pub start_timestamp: i64,
+
+    /// listing price
+    pub price: u64,
+
+    /// chosen token mint from platform supported tokens
+    pub payment_mint: Pubkey,
+
+    /// user token account of chosen payment mint
+    pub token_account: Pubkey,
+
+    /// minted subscriber nft
+    pub mint: Pubkey,
+
+    /// is listed nft claimable
+    pub is_claimable: bool,
+
+    pub buyer: Option<Pubkey>,
 }

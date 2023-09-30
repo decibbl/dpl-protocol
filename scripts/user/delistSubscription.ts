@@ -1,7 +1,7 @@
-import { BN } from "@coral-xyz/anchor";
 import { getAssociatedTokenAddressSync } from "@solana/spl-token";
 import {
   PublicKey,
+  SYSVAR_INSTRUCTIONS_PUBKEY,
   TransactionMessage,
   VersionedTransaction,
 } from "@solana/web3.js";
@@ -9,12 +9,12 @@ import { Workspace, connection, network } from "..";
 import { initializeKeypair } from "../initializeKeypair";
 import { Network, getUrls } from "../networks";
 
-export const subscribe = async ({
+export const delistSubscription = async ({
   domain,
-  tokenMint,
+  list,
 }: {
   domain: string;
-  tokenMint: PublicKey;
+  list: PublicKey;
 }) => {
   try {
     const authority = await initializeKeypair(connection, "user1");
@@ -27,32 +27,47 @@ export const subscribe = async ({
       domain,
       platformAuthority.publicKey
     );
+    console.log("Platform:", platform.toBase58());
 
-    const tokenAccount = getAssociatedTokenAddressSync(
-      tokenMint,
+    const listAccount = await workspace.program.account.list.fetch(list);
+
+    const mint = listAccount.mint;
+    console.log("Mint:", mint.toBase58());
+
+    const paymentMint = listAccount.paymentMint;
+
+    const authorityTokenAccount = getAssociatedTokenAddressSync(
+      paymentMint,
       authority.publicKey
     );
 
-    const supportedTokenAccount = getAssociatedTokenAddressSync(
-      tokenMint,
-      platformAuthority.publicKey
-    );
+    const tokenAccount = getAssociatedTokenAddressSync(mint, list, true);
 
-    const subscribeInstruction = await workspace.program.methods
-      .subscribe({ id: 1, duration: { twentySix: {} }, price: new BN(1) })
+    const metadata = workspace.findMetadataPda(mint);
+
+    const masterEdition = workspace.findMasterEditionPda(mint);
+
+    const delistSubscriptionInstruction = await workspace.program.methods
+      .delistSubscription(listAccount.startTimestamp)
       .accounts({
+        list,
         platform,
         user,
         authority: authority.publicKey,
-        userTokenAccount: tokenAccount,
-        supportedTokenAccount,
-        supportedTokenMint: tokenMint,
+        paymentMint,
+        authorityTokenAccount,
+        mint: mint,
+        tokenAccount,
+        metadata,
+        masterEdition,
+        metadataTokenProgram: workspace.metadataProgramId,
+        sysvarInstructions: SYSVAR_INSTRUCTIONS_PUBKEY,
       })
       .signers([])
       .instruction();
 
     const messageV0 = new TransactionMessage({
-      instructions: [subscribeInstruction],
+      instructions: [delistSubscriptionInstruction],
       payerKey: authority.publicKey,
       recentBlockhash: (await connection.getLatestBlockhash()).blockhash,
     }).compileToV0Message();
@@ -63,7 +78,7 @@ export const subscribe = async ({
     const signature = await connection.sendTransaction(transaction, {});
 
     console.log(
-      "Subscribe Signature:",
+      "Delist Subscription Signature:",
       getUrls(Network[network], signature, "tx").explorer
     );
   } catch (error) {
@@ -71,7 +86,7 @@ export const subscribe = async ({
   }
 };
 
-subscribe({
+delistSubscription({
   domain: "music.decibbl.com",
-  tokenMint: new PublicKey(process.argv[2]),
+  list: new PublicKey(process.argv[2]),
 });

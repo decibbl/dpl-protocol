@@ -31,7 +31,11 @@ export const addSubscriptionPlan = async ({ domain }: { domain: string }) => {
     // );
 
     const addSubscriptionPlanInstruction = await workspace.program.methods
-      .addSubscriptionPlan({ id: 1, duration: { four: {} }, price: new BN(1) })
+      .addSubscriptionPlan({
+        id: 1,
+        duration: { twentySix: {} },
+        price: new BN(1),
+      })
       .accounts({
         platform,
         authority: authority.publicKey,

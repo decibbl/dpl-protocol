@@ -86,13 +86,13 @@ pub struct SubscriptionDetails {
     /// royalties will be distributed
     pub token_account: Pubkey,
 
-    /// decimals above mint 
+    /// decimals above mint
     /// (to save extra rpc calls to just get decimals )
     pub decimals: u8,
 
     /// subscription plans w.r.t above mint
     #[max_len(5)]
-    pub subscription_plans: Vec<SubscriptionPlan>
+    pub subscription_plans: Vec<SubscriptionPlan>,
 }
 
 #[account]
@@ -119,11 +119,4 @@ pub struct Platform {
     /// subscription details
     #[max_len(5)]
     pub subscription_details: Vec<SubscriptionDetails>,
-
-    // list of all supported SPL Tokens and their Token Account
-    // #[max_len(5)]
-    // pub supported_tokens: Vec<SupportedToken>,
-
-    // #[max_len(5)]
-    // pub subscription_plans: Vec<SubscriptionPlan>,
 }

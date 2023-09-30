@@ -39,4 +39,10 @@ pub enum ProtocolErrors {
     InsufficientDelegateBalance,
     #[msg("Unsubscribe after current subscription end timestamp")]
     InvalidUnsubscribe,
+    #[msg("Listing not allowed")] // can be any reason check handler
+    ListingNotAllowed,
+    #[msg("Not claimable")]
+    NotClaimable,
+    #[msg("Invalid buyer")]
+    InvalidBuyer,
 }

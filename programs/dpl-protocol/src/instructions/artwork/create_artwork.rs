@@ -5,7 +5,7 @@ use mpl_token_metadata::state::{AssetData, PrintSupply};
 use crate::{
     constants::{ARTIST_SEED, ARTWORK_SEED, COLLECTION_SEED},
     states::{artist::Artist, artwork::Artwork, collection::Collection, platform::Platform},
-    utils::{mint_asset_with_signer, TokenMetadata},
+    utils::{mint_asset_with_signer_and_collection, TokenMetadata},
 };
 
 #[derive(Accounts)]
@@ -107,7 +107,7 @@ pub fn create_artwork_handler(
         &[*ctx.bumps.get("artist").unwrap()],
     ];
 
-    mint_asset_with_signer(
+    mint_asset_with_signer_and_collection(
         asset_data,
         &ctx.accounts.metadata,
         &ctx.accounts.master_edition,

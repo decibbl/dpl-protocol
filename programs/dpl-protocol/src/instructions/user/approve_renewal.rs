@@ -4,7 +4,13 @@ use anchor_spl::{
     token::{Mint, Token, TokenAccount},
 };
 
-use crate::{errors::ProtocolErrors, states::{user::User, platform::{Platform, Duration}}};
+use crate::{
+    errors::ProtocolErrors,
+    states::{
+        platform::{Duration, Platform},
+        user::User,
+    },
+};
 
 /// in case of renewal fails due to insufficient delegate balance then user can
 /// themselves approve the renewal manually, by resubscribing with new approval

@@ -1,6 +1,9 @@
 use anchor_lang::prelude::*;
 
-use crate::{errors::ProtocolErrors, states::{user::User, platform::Platform}};
+use crate::{
+    errors::ProtocolErrors,
+    states::{platform::Platform, user::User},
+};
 
 #[derive(Accounts)]
 pub struct Unsubscribe<'info> {

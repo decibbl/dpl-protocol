@@ -60,3 +60,10 @@ subscribe = "ts-node ./scripts/user/subscribe.ts"
 unsubscribe = "ts-node ./scripts/user/unsubscribe.ts"
 renewal = "ts-node ./scripts/user/renewal.ts"
 approve-renewal = "ts-node ./scripts/user/approveRenewal.ts"
+
+# user: marketplace
+get-lists = "ts-node ./scripts/user/getLists.ts"
+list-subscription = "ts-node ./scripts/user/listSubscription.ts"
+delist-subscription = "ts-node ./scripts/user/delistSubscription.ts"
+sell-subscription = "ts-node ./scripts/user/sellSubscription.ts"
+claim-subscription = "ts-node ./scripts/user/claimSubscription.ts"

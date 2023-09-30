@@ -252,6 +252,45 @@ export class InvalidUnsubscribeError extends ProgramError {
 codeToErrorMap.set(0x1780, InvalidUnsubscribeError);
 nameToErrorMap.set('InvalidUnsubscribe', InvalidUnsubscribeError);
 
+/** ListingNotAllowed: Listing not allowed */
+export class ListingNotAllowedError extends ProgramError {
+  readonly name: string = 'ListingNotAllowed';
+
+  readonly code: number = 0x1781; // 6017
+
+  constructor(program: Program, cause?: Error) {
+    super('Listing not allowed', program, cause);
+  }
+}
+codeToErrorMap.set(0x1781, ListingNotAllowedError);
+nameToErrorMap.set('ListingNotAllowed', ListingNotAllowedError);
+
+/** NotClaimable: Not claimable */
+export class NotClaimableError extends ProgramError {
+  readonly name: string = 'NotClaimable';
+
+  readonly code: number = 0x1782; // 6018
+
+  constructor(program: Program, cause?: Error) {
+    super('Not claimable', program, cause);
+  }
+}
+codeToErrorMap.set(0x1782, NotClaimableError);
+nameToErrorMap.set('NotClaimable', NotClaimableError);
+
+/** InvalidBuyer: Invalid buyer */
+export class InvalidBuyerError extends ProgramError {
+  readonly name: string = 'InvalidBuyer';
+
+  readonly code: number = 0x1783; // 6019
+
+  constructor(program: Program, cause?: Error) {
+    super('Invalid buyer', program, cause);
+  }
+}
+codeToErrorMap.set(0x1783, InvalidBuyerError);
+nameToErrorMap.set('InvalidBuyer', InvalidBuyerError);
+
 /**
  * Attempts to resolve a custom program error from the provided error code.
  * @category Errors

@@ -4,7 +4,13 @@ use anchor_spl::{
     token::{Mint, Token, TokenAccount},
 };
 
-use crate::{errors::ProtocolErrors, states::{user::User, platform::{Platform, SubscriptionPlan, Duration}}};
+use crate::{
+    errors::ProtocolErrors,
+    states::{
+        platform::{Duration, Platform, SubscriptionPlan},
+        user::User,
+    },
+};
 
 #[derive(Accounts)]
 pub struct Subscribe<'info> {

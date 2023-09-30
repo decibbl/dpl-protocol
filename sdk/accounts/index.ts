@@ -9,5 +9,6 @@
 export * from './artist';
 export * from './artwork';
 export * from './collection';
+export * from './list';
 export * from './platform';
 export * from './user';

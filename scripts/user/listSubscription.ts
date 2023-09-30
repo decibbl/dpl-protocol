@@ -1,3 +1,5 @@
+import { BN } from "@coral-xyz/anchor";
+import { getAssociatedTokenAddressSync } from "@solana/spl-token";
 import {
   ComputeBudgetProgram,
   Keypair,
@@ -6,16 +8,21 @@ import {
   TransactionMessage,
   VersionedTransaction,
 } from "@solana/web3.js";
-import { Workspace, connection, network } from "..";
+import { Workspace, connection, network, saveLogs } from "..";
 import { initializeKeypair } from "../initializeKeypair";
-import { getAssociatedTokenAddressSync } from "@solana/spl-token";
 import { uploadMetadata } from "../ipfs";
-import { BN } from "@coral-xyz/anchor";
 import { Network, getUrls } from "../networks";
+import { MetadataDelegateRole } from "@metaplex-foundation/mpl-token-metadata";
 
-export const createUser = async ({ domain }: { domain: string }) => {
+export const listSubscription = async ({
+  domain,
+  paymentMint,
+}: {
+  domain: string;
+  paymentMint: PublicKey;
+}) => {
   try {
-    const authority = await initializeKeypair(connection, "user2");
+    const authority = await initializeKeypair(connection, "user1");
     const platformAuthority = await initializeKeypair(connection, "platform1");
 
     const workspace = new Workspace(authority);
@@ -27,40 +34,40 @@ export const createUser = async ({ domain }: { domain: string }) => {
     );
     console.log("Platform:", platform.toBase58());
 
-    const platformAccount = await workspace.program.account.platform.fetch(
-      platform
-    );
+    const startTimestamp = new BN(new Date().getTime());
+
+    const list = workspace.findListPda(authority.publicKey, startTimestamp);
+    console.log("List:", list.toBase58());
 
     const mint = Keypair.generate();
     console.log("Mint:", mint.publicKey.toBase58());
 
+    const authorityTokenAccount = getAssociatedTokenAddressSync(
+      paymentMint,
+      authority.publicKey
+    );
+
     const tokenAccount = getAssociatedTokenAddressSync(
       mint.publicKey,
-      authority.publicKey
+      list,
+      true
     );
 
     const metadata = workspace.findMetadataPda(mint.publicKey);
 
     const masterEdition = workspace.findMasterEditionPda(mint.publicKey);
 
-    const collectionMetadata = workspace.findMetadataPda(
-      platformAccount.userMint
-    );
-    const collectionMasterEdition = workspace.findMasterEditionPda(
-      platformAccount.userMint
-    );
-
     const jsonMetadata = {
-      name: "User One",
-      description: "First user of Decibbl Music.",
-      symbol: "USER",
+      name: "User One | 29-09-2023",
+      description: "First Subscription NFT of user one on Decibbl Music.",
+      symbol: "SUB",
     };
 
     const uri = await uploadMetadata(
       connection,
       authority,
-      "./assets/User1.png",
-      "User1.png",
+      "./assets/SubscriberNft1.png",
+      "SubscriberNft.png",
       jsonMetadata
     );
     console.log("URI:", uri);
@@ -74,19 +81,19 @@ export const createUser = async ({ domain }: { domain: string }) => {
       primarySaleHappened: false,
       isMutable: true,
       tokenStandard: { nonFungible: {} },
-      collection: { key: platformAccount.userMint, verified: false },
+      collection: null,
       uses: null,
-      collectionDetails: { v1: { size: new BN(0) } },
+      collectionDetails: null,
       ruleSet: null,
     };
 
     const modifyComputeUnitsInstruction =
       ComputeBudgetProgram.setComputeUnitLimit({
-        units: 500000,
+        units: 300000,
       });
 
-    const createUserInstruction = await workspace.program.methods
-      .createUser({
+    const listSubscriptionInstruction = await workspace.program.methods
+      .listSubscription(startTimestamp, new BN(1), {
         name: assetData.name,
         symbol: assetData.symbol,
         uri: assetData.uri,
@@ -101,17 +108,16 @@ export const createUser = async ({ domain }: { domain: string }) => {
         ruleSet: assetData.ruleSet,
       })
       .accounts({
-        user,
+        list,
         platform,
+        user,
         authority: authority.publicKey,
+        paymentMint,
+        authorityTokenAccount,
         mint: mint.publicKey,
         tokenAccount,
         metadata,
         masterEdition,
-        collectionAuthority: platformAuthority.publicKey,
-        collectionMint: platformAccount.userMint,
-        collectionMetadata,
-        collectionMasterEdition,
         metadataTokenProgram: workspace.metadataProgramId,
         sysvarInstructions: SYSVAR_INSTRUCTIONS_PUBKEY,
       })
@@ -119,7 +125,10 @@ export const createUser = async ({ domain }: { domain: string }) => {
       .instruction();
 
     const messageV0 = new TransactionMessage({
-      instructions: [modifyComputeUnitsInstruction, createUserInstruction],
+      instructions: [
+        modifyComputeUnitsInstruction,
+        listSubscriptionInstruction,
+      ],
       payerKey: authority.publicKey,
       recentBlockhash: (await connection.getLatestBlockhash()).blockhash,
     }).compileToV0Message();
@@ -130,14 +139,16 @@ export const createUser = async ({ domain }: { domain: string }) => {
     const signature = await connection.sendTransaction(transaction, {});
 
     console.log(
-      "Create User Signature:",
+      "List Subscription Signature:",
       getUrls(Network[network], signature, "tx").explorer
     );
   } catch (error) {
     console.log(error);
+    saveLogs(error.logs);
   }
 };
 
-createUser({
+listSubscription({
   domain: "music.decibbl.com",
+  paymentMint: new PublicKey(process.argv[2]),
 });

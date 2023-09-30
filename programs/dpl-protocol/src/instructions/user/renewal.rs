@@ -4,7 +4,14 @@ use anchor_spl::{
     token::{Mint, Token, TokenAccount},
 };
 
-use crate::{constants::USER_SEED, errors::ProtocolErrors, states::{user::User, platform::{Platform, Duration}}};
+use crate::{
+    constants::USER_SEED,
+    errors::ProtocolErrors,
+    states::{
+        platform::{Duration, Platform},
+        user::User,
+    },
+};
 
 #[derive(Accounts)]
 pub struct Renewal<'info> {
