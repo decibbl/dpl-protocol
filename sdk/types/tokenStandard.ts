@@ -6,7 +6,7 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { Serializer, scalarEnum } from '@metaplex-foundation/umi/serializers';
+import { Serializer, scalarEnum } from "@metaplex-foundation/umi/serializers";
 
 export enum TokenStandard {
   NonFungible,
@@ -24,6 +24,6 @@ export function getTokenStandardSerializer(): Serializer<
   TokenStandard
 > {
   return scalarEnum<TokenStandard>(TokenStandard, {
-    description: 'TokenStandard',
+    description: "TokenStandard",
   }) as Serializer<TokenStandardArgs, TokenStandard>;
 }

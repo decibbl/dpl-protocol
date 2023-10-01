@@ -20,17 +20,18 @@ import {
   deserializeAccount,
   gpaBuilder,
   publicKey as toPublicKey,
-} from '@metaplex-foundation/umi';
+} from "@metaplex-foundation/umi";
 import {
   Serializer,
   array,
   mapSerializer,
   option,
   publicKey as publicKeySerializer,
+  string,
   struct,
   u8,
-} from '@metaplex-foundation/umi/serializers';
-import { Uses, UsesArgs, getUsesSerializer } from '../types';
+} from "@metaplex-foundation/umi/serializers";
+import { Uses, UsesArgs, getUsesSerializer } from "../types";
 
 export type Artwork = Account<ArtworkAccountData>;
 
@@ -90,14 +91,14 @@ export function getArtworkAccountDataSerializer(): Serializer<
   return mapSerializer<ArtworkAccountDataArgs, any, ArtworkAccountData>(
     struct<ArtworkAccountData>(
       [
-        ['discriminator', array(u8(), { size: 8 })],
-        ['artist', publicKeySerializer()],
-        ['mint', publicKeySerializer()],
-        ['uses', getUsesSerializer()],
-        ['collection', option(publicKeySerializer())],
-        ['platforms', array(publicKeySerializer())],
+        ["discriminator", array(u8(), { size: 8 })],
+        ["artist", publicKeySerializer()],
+        ["mint", publicKeySerializer()],
+        ["uses", getUsesSerializer()],
+        ["collection", option(publicKeySerializer())],
+        ["platforms", array(publicKeySerializer())],
       ],
-      { description: 'ArtworkAccountData' }
+      { description: "ArtworkAccountData" }
     ),
     (value) => ({ ...value, discriminator: [18, 146, 190, 9, 4, 164, 2, 47] })
   ) as Serializer<ArtworkAccountDataArgs, ArtworkAccountData>;
@@ -108,7 +109,7 @@ export function deserializeArtwork(rawAccount: RpcAccount): Artwork {
 }
 
 export async function fetchArtwork(
-  context: Pick<Context, 'rpc'>,
+  context: Pick<Context, "rpc">,
   publicKey: PublicKey | Pda,
   options?: RpcGetAccountOptions
 ): Promise<Artwork> {
@@ -116,12 +117,12 @@ export async function fetchArtwork(
     toPublicKey(publicKey, false),
     options
   );
-  assertAccountExists(maybeAccount, 'Artwork');
+  assertAccountExists(maybeAccount, "Artwork");
   return deserializeArtwork(maybeAccount);
 }
 
 export async function safeFetchArtwork(
-  context: Pick<Context, 'rpc'>,
+  context: Pick<Context, "rpc">,
   publicKey: PublicKey | Pda,
   options?: RpcGetAccountOptions
 ): Promise<Artwork | null> {
@@ -133,7 +134,7 @@ export async function safeFetchArtwork(
 }
 
 export async function fetchAllArtwork(
-  context: Pick<Context, 'rpc'>,
+  context: Pick<Context, "rpc">,
   publicKeys: Array<PublicKey | Pda>,
   options?: RpcGetAccountsOptions
 ): Promise<Artwork[]> {
@@ -142,13 +143,13 @@ export async function fetchAllArtwork(
     options
   );
   return maybeAccounts.map((maybeAccount) => {
-    assertAccountExists(maybeAccount, 'Artwork');
+    assertAccountExists(maybeAccount, "Artwork");
     return deserializeArtwork(maybeAccount);
   });
 }
 
 export async function safeFetchAllArtwork(
-  context: Pick<Context, 'rpc'>,
+  context: Pick<Context, "rpc">,
   publicKeys: Array<PublicKey | Pda>,
   options?: RpcGetAccountsOptions
 ): Promise<Artwork[]> {
@@ -162,11 +163,11 @@ export async function safeFetchAllArtwork(
 }
 
 export function getArtworkGpaBuilder(
-  context: Pick<Context, 'rpc' | 'programs'>
+  context: Pick<Context, "rpc" | "programs">
 ) {
   const programId = context.programs.getPublicKey(
-    'dplProtocol',
-    'ywpMZZNG3Nx1Bu2deJCcNxzUUoWSm6YwN9r9jCF8art'
+    "dplProtocol",
+    "ywpMZZNG3Nx1Bu2deJCcNxzUUoWSm6YwN9r9jCF8art"
   );
   return gpaBuilder(context, programId)
     .registerFields<{
@@ -185,5 +186,40 @@ export function getArtworkGpaBuilder(
       platforms: [null, array(publicKeySerializer())],
     })
     .deserializeUsing<Artwork>((account) => deserializeArtwork(account))
-    .whereField('discriminator', [18, 146, 190, 9, 4, 164, 2, 47]);
+    .whereField("discriminator", [18, 146, 190, 9, 4, 164, 2, 47]);
+}
+
+export function findArtworkPda(
+  context: Pick<Context, "eddsa" | "programs">,
+  seeds: {
+    authority: PublicKey;
+
+    mint: PublicKey;
+  }
+): Pda {
+  const programId = context.programs.getPublicKey(
+    "dplProtocol",
+    "ywpMZZNG3Nx1Bu2deJCcNxzUUoWSm6YwN9r9jCF8art"
+  );
+  return context.eddsa.findPda(programId, [
+    string({ size: "variable" }).serialize("artwork"),
+    publicKeySerializer().serialize(seeds.authority),
+    publicKeySerializer().serialize(seeds.mint),
+  ]);
+}
+
+export async function fetchArtworkFromSeeds(
+  context: Pick<Context, "eddsa" | "programs" | "rpc">,
+  seeds: Parameters<typeof findArtworkPda>[1],
+  options?: RpcGetAccountOptions
+): Promise<Artwork> {
+  return fetchArtwork(context, findArtworkPda(context, seeds), options);
+}
+
+export async function safeFetchArtworkFromSeeds(
+  context: Pick<Context, "eddsa" | "programs" | "rpc">,
+  seeds: Parameters<typeof findArtworkPda>[1],
+  options?: RpcGetAccountOptions
+): Promise<Artwork | null> {
+  return safeFetchArtwork(context, findArtworkPda(context, seeds), options);
 }

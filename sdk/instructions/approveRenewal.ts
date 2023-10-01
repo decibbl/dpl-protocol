@@ -13,19 +13,19 @@ import {
   Signer,
   TransactionBuilder,
   transactionBuilder,
-} from '@metaplex-foundation/umi';
+} from "@metaplex-foundation/umi";
 import {
   Serializer,
   array,
   mapSerializer,
   struct,
   u8,
-} from '@metaplex-foundation/umi/serializers';
+} from "@metaplex-foundation/umi/serializers";
 import {
   ResolvedAccount,
   ResolvedAccountsWithIndices,
   getAccountMetasAndSigners,
-} from '../shared';
+} from "../shared";
 
 // Accounts.
 export type ApproveRenewalInstructionAccounts = {
@@ -68,8 +68,8 @@ export function getApproveRenewalInstructionDataSerializer(): Serializer<
     ApproveRenewalInstructionData
   >(
     struct<ApproveRenewalInstructionData>(
-      [['discriminator', array(u8(), { size: 8 })]],
-      { description: 'ApproveRenewalInstructionData' }
+      [["discriminator", array(u8(), { size: 8 })]],
+      { description: "ApproveRenewalInstructionData" }
     ),
     (value) => ({ ...value, discriminator: [43, 240, 192, 5, 190, 29, 128, 0] })
   ) as Serializer<
@@ -80,13 +80,13 @@ export function getApproveRenewalInstructionDataSerializer(): Serializer<
 
 // Instruction.
 export function approveRenewal(
-  context: Pick<Context, 'identity' | 'programs'>,
+  context: Pick<Context, "identity" | "programs">,
   input: ApproveRenewalInstructionAccounts
 ): TransactionBuilder {
   // Program ID.
   const programId = context.programs.getPublicKey(
-    'dplProtocol',
-    'ywpMZZNG3Nx1Bu2deJCcNxzUUoWSm6YwN9r9jCF8art'
+    "dplProtocol",
+    "ywpMZZNG3Nx1Bu2deJCcNxzUUoWSm6YwN9r9jCF8art"
   );
 
   // Accounts.
@@ -132,15 +132,15 @@ export function approveRenewal(
   }
   if (!resolvedAccounts.tokenProgram.value) {
     resolvedAccounts.tokenProgram.value = context.programs.getPublicKey(
-      'splToken',
-      'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
+      "splToken",
+      "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
     );
     resolvedAccounts.tokenProgram.isWritable = false;
   }
   if (!resolvedAccounts.systemProgram.value) {
     resolvedAccounts.systemProgram.value = context.programs.getPublicKey(
-      'splSystem',
-      '11111111111111111111111111111111'
+      "splSystem",
+      "11111111111111111111111111111111"
     );
     resolvedAccounts.systemProgram.isWritable = false;
   }
@@ -153,7 +153,7 @@ export function approveRenewal(
   // Keys and Signers.
   const [keys, signers] = getAccountMetasAndSigners(
     orderedAccounts,
-    'programId',
+    "programId",
     programId
   );
 

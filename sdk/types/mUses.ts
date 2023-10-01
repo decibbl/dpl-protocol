@@ -6,8 +6,8 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { Serializer, struct, u64 } from '@metaplex-foundation/umi/serializers';
-import { UseMethod, UseMethodArgs, getUseMethodSerializer } from '.';
+import { Serializer, struct, u64 } from "@metaplex-foundation/umi/serializers";
+import { UseMethod, UseMethodArgs, getUseMethodSerializer } from ".";
 
 export type MUses = { useMethod: UseMethod; remaining: bigint; total: bigint };
 
@@ -20,10 +20,10 @@ export type MUsesArgs = {
 export function getMUsesSerializer(): Serializer<MUsesArgs, MUses> {
   return struct<MUses>(
     [
-      ['useMethod', getUseMethodSerializer()],
-      ['remaining', u64()],
-      ['total', u64()],
+      ["useMethod", getUseMethodSerializer()],
+      ["remaining", u64()],
+      ["total", u64()],
     ],
-    { description: 'MUses' }
+    { description: "MUses" }
   ) as Serializer<MUsesArgs, MUses>;
 }

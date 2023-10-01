@@ -11,18 +11,18 @@ import {
   Context,
   Program,
   PublicKey,
-} from '@metaplex-foundation/umi';
+} from "@metaplex-foundation/umi";
 import {
   getDplProtocolErrorFromCode,
   getDplProtocolErrorFromName,
-} from '../errors';
+} from "../errors";
 
 export const DPL_PROTOCOL_PROGRAM_ID =
-  'ywpMZZNG3Nx1Bu2deJCcNxzUUoWSm6YwN9r9jCF8art' as PublicKey<'ywpMZZNG3Nx1Bu2deJCcNxzUUoWSm6YwN9r9jCF8art'>;
+  "ywpMZZNG3Nx1Bu2deJCcNxzUUoWSm6YwN9r9jCF8art" as PublicKey<"ywpMZZNG3Nx1Bu2deJCcNxzUUoWSm6YwN9r9jCF8art">;
 
 export function createDplProtocolProgram(): Program {
   return {
-    name: 'dplProtocol',
+    name: "dplProtocol",
     publicKey: DPL_PROTOCOL_PROGRAM_ID,
     getErrorFromCode(code: number, cause?: Error) {
       return getDplProtocolErrorFromCode(code, this, cause);
@@ -37,18 +37,18 @@ export function createDplProtocolProgram(): Program {
 }
 
 export function getDplProtocolProgram<T extends Program = Program>(
-  context: Pick<Context, 'programs'>,
+  context: Pick<Context, "programs">,
   clusterFilter?: ClusterFilter
 ): T {
-  return context.programs.get<T>('dplProtocol', clusterFilter);
+  return context.programs.get<T>("dplProtocol", clusterFilter);
 }
 
 export function getDplProtocolProgramId(
-  context: Pick<Context, 'programs'>,
+  context: Pick<Context, "programs">,
   clusterFilter?: ClusterFilter
 ): PublicKey {
   return context.programs.getPublicKey(
-    'dplProtocol',
+    "dplProtocol",
     DPL_PROTOCOL_PROGRAM_ID,
     clusterFilter
   );

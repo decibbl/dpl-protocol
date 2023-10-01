@@ -14,7 +14,7 @@ import {
   TransactionBuilder,
   publicKey,
   transactionBuilder,
-} from '@metaplex-foundation/umi';
+} from "@metaplex-foundation/umi";
 import {
   Serializer,
   array,
@@ -22,12 +22,12 @@ import {
   mapSerializer,
   struct,
   u8,
-} from '@metaplex-foundation/umi/serializers';
+} from "@metaplex-foundation/umi/serializers";
 import {
   ResolvedAccount,
   ResolvedAccountsWithIndices,
   getAccountMetasAndSigners,
-} from '../shared';
+} from "../shared";
 import {
   AssetData,
   AssetDataArgs,
@@ -35,7 +35,7 @@ import {
   PrintSupplyArgs,
   getAssetDataSerializer,
   getPrintSupplySerializer,
-} from '../types';
+} from "../types";
 
 // Accounts.
 export type CreateArtworkInstructionAccounts = {
@@ -87,12 +87,12 @@ export function getCreateArtworkInstructionDataSerializer(): Serializer<
   >(
     struct<CreateArtworkInstructionData>(
       [
-        ['discriminator', array(u8(), { size: 8 })],
-        ['assetData', getAssetDataSerializer()],
-        ['isCollection', bool()],
-        ['printSupply', getPrintSupplySerializer()],
+        ["discriminator", array(u8(), { size: 8 })],
+        ["assetData", getAssetDataSerializer()],
+        ["isCollection", bool()],
+        ["printSupply", getPrintSupplySerializer()],
       ],
-      { description: 'CreateArtworkInstructionData' }
+      { description: "CreateArtworkInstructionData" }
     ),
     (value) => ({
       ...value,
@@ -109,13 +109,13 @@ export type CreateArtworkInstructionArgs = CreateArtworkInstructionDataArgs;
 
 // Instruction.
 export function createArtwork(
-  context: Pick<Context, 'identity' | 'programs'>,
+  context: Pick<Context, "identity" | "programs">,
   input: CreateArtworkInstructionAccounts & CreateArtworkInstructionArgs
 ): TransactionBuilder {
   // Program ID.
   const programId = context.programs.getPublicKey(
-    'dplProtocol',
-    'ywpMZZNG3Nx1Bu2deJCcNxzUUoWSm6YwN9r9jCF8art'
+    "dplProtocol",
+    "ywpMZZNG3Nx1Bu2deJCcNxzUUoWSm6YwN9r9jCF8art"
   );
 
   // Accounts.
@@ -192,21 +192,21 @@ export function createArtwork(
   }
   if (!resolvedAccounts.systemProgram.value) {
     resolvedAccounts.systemProgram.value = context.programs.getPublicKey(
-      'splSystem',
-      '11111111111111111111111111111111'
+      "splSystem",
+      "11111111111111111111111111111111"
     );
     resolvedAccounts.systemProgram.isWritable = false;
   }
   if (!resolvedAccounts.tokenProgram.value) {
     resolvedAccounts.tokenProgram.value = context.programs.getPublicKey(
-      'splToken',
-      'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
+      "splToken",
+      "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
     );
     resolvedAccounts.tokenProgram.isWritable = false;
   }
   if (!resolvedAccounts.sysvarInstructions.value) {
     resolvedAccounts.sysvarInstructions.value = publicKey(
-      'Sysvar1nstructions1111111111111111111111111'
+      "Sysvar1nstructions1111111111111111111111111"
     );
   }
 
@@ -218,7 +218,7 @@ export function createArtwork(
   // Keys and Signers.
   const [keys, signers] = getAccountMetasAndSigners(
     orderedAccounts,
-    'programId',
+    "programId",
     programId
   );
 

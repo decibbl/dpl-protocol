@@ -14,7 +14,7 @@ import {
   TransactionBuilder,
   publicKey,
   transactionBuilder,
-} from '@metaplex-foundation/umi';
+} from "@metaplex-foundation/umi";
 import {
   Serializer,
   array,
@@ -23,13 +23,13 @@ import {
   struct,
   u64,
   u8,
-} from '@metaplex-foundation/umi/serializers';
+} from "@metaplex-foundation/umi/serializers";
 import {
   ResolvedAccount,
   ResolvedAccountsWithIndices,
   getAccountMetasAndSigners,
-} from '../shared';
-import { AssetData, AssetDataArgs, getAssetDataSerializer } from '../types';
+} from "../shared";
+import { AssetData, AssetDataArgs, getAssetDataSerializer } from "../types";
 
 // Accounts.
 export type ListSubscriptionInstructionAccounts = {
@@ -80,12 +80,12 @@ export function getListSubscriptionInstructionDataSerializer(): Serializer<
   >(
     struct<ListSubscriptionInstructionData>(
       [
-        ['discriminator', array(u8(), { size: 8 })],
-        ['listingStartsAt', i64()],
-        ['price', u64()],
-        ['assetData', getAssetDataSerializer()],
+        ["discriminator", array(u8(), { size: 8 })],
+        ["listingStartsAt", i64()],
+        ["price", u64()],
+        ["assetData", getAssetDataSerializer()],
       ],
-      { description: 'ListSubscriptionInstructionData' }
+      { description: "ListSubscriptionInstructionData" }
     ),
     (value) => ({
       ...value,
@@ -103,13 +103,13 @@ export type ListSubscriptionInstructionArgs =
 
 // Instruction.
 export function listSubscription(
-  context: Pick<Context, 'identity' | 'programs'>,
+  context: Pick<Context, "identity" | "programs">,
   input: ListSubscriptionInstructionAccounts & ListSubscriptionInstructionArgs
 ): TransactionBuilder {
   // Program ID.
   const programId = context.programs.getPublicKey(
-    'dplProtocol',
-    'ywpMZZNG3Nx1Bu2deJCcNxzUUoWSm6YwN9r9jCF8art'
+    "dplProtocol",
+    "ywpMZZNG3Nx1Bu2deJCcNxzUUoWSm6YwN9r9jCF8art"
   );
 
   // Accounts.
@@ -176,21 +176,21 @@ export function listSubscription(
   }
   if (!resolvedAccounts.systemProgram.value) {
     resolvedAccounts.systemProgram.value = context.programs.getPublicKey(
-      'splSystem',
-      '11111111111111111111111111111111'
+      "splSystem",
+      "11111111111111111111111111111111"
     );
     resolvedAccounts.systemProgram.isWritable = false;
   }
   if (!resolvedAccounts.tokenProgram.value) {
     resolvedAccounts.tokenProgram.value = context.programs.getPublicKey(
-      'splToken',
-      'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
+      "splToken",
+      "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
     );
     resolvedAccounts.tokenProgram.isWritable = false;
   }
   if (!resolvedAccounts.sysvarInstructions.value) {
     resolvedAccounts.sysvarInstructions.value = publicKey(
-      'Sysvar1nstructions1111111111111111111111111'
+      "Sysvar1nstructions1111111111111111111111111"
     );
   }
 
@@ -202,7 +202,7 @@ export function listSubscription(
   // Keys and Signers.
   const [keys, signers] = getAccountMetasAndSigners(
     orderedAccounts,
-    'programId',
+    "programId",
     programId
   );
 

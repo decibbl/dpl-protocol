@@ -13,11 +13,11 @@ import {
   dataEnum,
   struct,
   u64,
-} from '@metaplex-foundation/umi/serializers';
+} from "@metaplex-foundation/umi/serializers";
 
-export type CollectionDetails = { __kind: 'V1'; size: bigint };
+export type CollectionDetails = { __kind: "V1"; size: bigint };
 
-export type CollectionDetailsArgs = { __kind: 'V1'; size: number | bigint };
+export type CollectionDetailsArgs = { __kind: "V1"; size: number | bigint };
 
 export function getCollectionDetailsSerializer(): Serializer<
   CollectionDetailsArgs,
@@ -26,22 +26,22 @@ export function getCollectionDetailsSerializer(): Serializer<
   return dataEnum<CollectionDetails>(
     [
       [
-        'V1',
-        struct<GetDataEnumKindContent<CollectionDetails, 'V1'>>([
-          ['size', u64()],
+        "V1",
+        struct<GetDataEnumKindContent<CollectionDetails, "V1">>([
+          ["size", u64()],
         ]),
       ],
     ],
-    { description: 'CollectionDetails' }
+    { description: "CollectionDetails" }
   ) as Serializer<CollectionDetailsArgs, CollectionDetails>;
 }
 
 // Data Enum Helpers.
 export function collectionDetails(
-  kind: 'V1',
-  data: GetDataEnumKindContent<CollectionDetailsArgs, 'V1'>
-): GetDataEnumKind<CollectionDetailsArgs, 'V1'>;
-export function collectionDetails<K extends CollectionDetailsArgs['__kind']>(
+  kind: "V1",
+  data: GetDataEnumKindContent<CollectionDetailsArgs, "V1">
+): GetDataEnumKind<CollectionDetailsArgs, "V1">;
+export function collectionDetails<K extends CollectionDetailsArgs["__kind"]>(
   kind: K,
   data?: any
 ): Extract<CollectionDetailsArgs, { __kind: K }> {
@@ -49,7 +49,7 @@ export function collectionDetails<K extends CollectionDetailsArgs['__kind']>(
     ? { __kind: kind, fields: data }
     : { __kind: kind, ...(data ?? {}) };
 }
-export function isCollectionDetails<K extends CollectionDetails['__kind']>(
+export function isCollectionDetails<K extends CollectionDetails["__kind"]>(
   kind: K,
   value: CollectionDetails
 ): value is CollectionDetails & { __kind: K } {

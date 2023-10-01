@@ -18,7 +18,7 @@ import {
   deserializeAccount,
   gpaBuilder,
   publicKey as toPublicKey,
-} from '@metaplex-foundation/umi';
+} from "@metaplex-foundation/umi";
 import {
   Serializer,
   array,
@@ -27,12 +27,12 @@ import {
   string,
   struct,
   u8,
-} from '@metaplex-foundation/umi/serializers';
+} from "@metaplex-foundation/umi/serializers";
 import {
   SubscriptionDetails,
   SubscriptionDetailsArgs,
   getSubscriptionDetailsSerializer,
-} from '../types';
+} from "../types";
 
 export type Platform = Account<PlatformAccountData>;
 
@@ -86,15 +86,15 @@ export function getPlatformAccountDataSerializer(): Serializer<
   return mapSerializer<PlatformAccountDataArgs, any, PlatformAccountData>(
     struct<PlatformAccountData>(
       [
-        ['discriminator', array(u8(), { size: 8 })],
-        ['authority', publicKeySerializer()],
-        ['mint', publicKeySerializer()],
-        ['artistMint', publicKeySerializer()],
-        ['userMint', publicKeySerializer()],
-        ['domain', string()],
-        ['subscriptionDetails', array(getSubscriptionDetailsSerializer())],
+        ["discriminator", array(u8(), { size: 8 })],
+        ["authority", publicKeySerializer()],
+        ["mint", publicKeySerializer()],
+        ["artistMint", publicKeySerializer()],
+        ["userMint", publicKeySerializer()],
+        ["domain", string()],
+        ["subscriptionDetails", array(getSubscriptionDetailsSerializer())],
       ],
-      { description: 'PlatformAccountData' }
+      { description: "PlatformAccountData" }
     ),
     (value) => ({ ...value, discriminator: [77, 92, 204, 58, 187, 98, 91, 12] })
   ) as Serializer<PlatformAccountDataArgs, PlatformAccountData>;
@@ -105,7 +105,7 @@ export function deserializePlatform(rawAccount: RpcAccount): Platform {
 }
 
 export async function fetchPlatform(
-  context: Pick<Context, 'rpc'>,
+  context: Pick<Context, "rpc">,
   publicKey: PublicKey | Pda,
   options?: RpcGetAccountOptions
 ): Promise<Platform> {
@@ -113,12 +113,12 @@ export async function fetchPlatform(
     toPublicKey(publicKey, false),
     options
   );
-  assertAccountExists(maybeAccount, 'Platform');
+  assertAccountExists(maybeAccount, "Platform");
   return deserializePlatform(maybeAccount);
 }
 
 export async function safeFetchPlatform(
-  context: Pick<Context, 'rpc'>,
+  context: Pick<Context, "rpc">,
   publicKey: PublicKey | Pda,
   options?: RpcGetAccountOptions
 ): Promise<Platform | null> {
@@ -130,7 +130,7 @@ export async function safeFetchPlatform(
 }
 
 export async function fetchAllPlatform(
-  context: Pick<Context, 'rpc'>,
+  context: Pick<Context, "rpc">,
   publicKeys: Array<PublicKey | Pda>,
   options?: RpcGetAccountsOptions
 ): Promise<Platform[]> {
@@ -139,13 +139,13 @@ export async function fetchAllPlatform(
     options
   );
   return maybeAccounts.map((maybeAccount) => {
-    assertAccountExists(maybeAccount, 'Platform');
+    assertAccountExists(maybeAccount, "Platform");
     return deserializePlatform(maybeAccount);
   });
 }
 
 export async function safeFetchAllPlatform(
-  context: Pick<Context, 'rpc'>,
+  context: Pick<Context, "rpc">,
   publicKeys: Array<PublicKey | Pda>,
   options?: RpcGetAccountsOptions
 ): Promise<Platform[]> {
@@ -159,11 +159,11 @@ export async function safeFetchAllPlatform(
 }
 
 export function getPlatformGpaBuilder(
-  context: Pick<Context, 'rpc' | 'programs'>
+  context: Pick<Context, "rpc" | "programs">
 ) {
   const programId = context.programs.getPublicKey(
-    'dplProtocol',
-    'ywpMZZNG3Nx1Bu2deJCcNxzUUoWSm6YwN9r9jCF8art'
+    "dplProtocol",
+    "ywpMZZNG3Nx1Bu2deJCcNxzUUoWSm6YwN9r9jCF8art"
   );
   return gpaBuilder(context, programId)
     .registerFields<{
@@ -184,5 +184,38 @@ export function getPlatformGpaBuilder(
       subscriptionDetails: [null, array(getSubscriptionDetailsSerializer())],
     })
     .deserializeUsing<Platform>((account) => deserializePlatform(account))
-    .whereField('discriminator', [77, 92, 204, 58, 187, 98, 91, 12]);
+    .whereField("discriminator", [77, 92, 204, 58, 187, 98, 91, 12]);
+}
+
+export function findPlatformPda(
+  context: Pick<Context, "eddsa" | "programs">,
+  seeds: {
+    authority: PublicKey;
+  }
+): Pda {
+  const programId = context.programs.getPublicKey(
+    "dplProtocol",
+    "ywpMZZNG3Nx1Bu2deJCcNxzUUoWSm6YwN9r9jCF8art"
+  );
+  return context.eddsa.findPda(programId, [
+    string({ size: "variable" }).serialize("platform"),
+    string({ size: "variable" }).serialize("domain"),
+    publicKeySerializer().serialize(seeds.authority),
+  ]);
+}
+
+export async function fetchPlatformFromSeeds(
+  context: Pick<Context, "eddsa" | "programs" | "rpc">,
+  seeds: Parameters<typeof findPlatformPda>[1],
+  options?: RpcGetAccountOptions
+): Promise<Platform> {
+  return fetchPlatform(context, findPlatformPda(context, seeds), options);
+}
+
+export async function safeFetchPlatformFromSeeds(
+  context: Pick<Context, "eddsa" | "programs" | "rpc">,
+  seeds: Parameters<typeof findPlatformPda>[1],
+  options?: RpcGetAccountOptions
+): Promise<Platform | null> {
+  return safeFetchPlatform(context, findPlatformPda(context, seeds), options);
 }

@@ -13,19 +13,19 @@ import {
   Signer,
   TransactionBuilder,
   transactionBuilder,
-} from '@metaplex-foundation/umi';
+} from "@metaplex-foundation/umi";
 import {
   Serializer,
   array,
   mapSerializer,
   struct,
   u8,
-} from '@metaplex-foundation/umi/serializers';
+} from "@metaplex-foundation/umi/serializers";
 import {
   ResolvedAccount,
   ResolvedAccountsWithIndices,
   getAccountMetasAndSigners,
-} from '../shared';
+} from "../shared";
 
 // Accounts.
 export type AddSupportedTokenDetailsInstructionAccounts = {
@@ -59,8 +59,8 @@ export function getAddSupportedTokenDetailsInstructionDataSerializer(): Serializ
     AddSupportedTokenDetailsInstructionData
   >(
     struct<AddSupportedTokenDetailsInstructionData>(
-      [['discriminator', array(u8(), { size: 8 })]],
-      { description: 'AddSupportedTokenDetailsInstructionData' }
+      [["discriminator", array(u8(), { size: 8 })]],
+      { description: "AddSupportedTokenDetailsInstructionData" }
     ),
     (value) => ({
       ...value,
@@ -74,13 +74,13 @@ export function getAddSupportedTokenDetailsInstructionDataSerializer(): Serializ
 
 // Instruction.
 export function addSupportedTokenDetails(
-  context: Pick<Context, 'identity' | 'programs'>,
+  context: Pick<Context, "identity" | "programs">,
   input: AddSupportedTokenDetailsInstructionAccounts
 ): TransactionBuilder {
   // Program ID.
   const programId = context.programs.getPublicKey(
-    'dplProtocol',
-    'ywpMZZNG3Nx1Bu2deJCcNxzUUoWSm6YwN9r9jCF8art'
+    "dplProtocol",
+    "ywpMZZNG3Nx1Bu2deJCcNxzUUoWSm6YwN9r9jCF8art"
   );
 
   // Accounts.
@@ -116,15 +116,15 @@ export function addSupportedTokenDetails(
   }
   if (!resolvedAccounts.systemProgram.value) {
     resolvedAccounts.systemProgram.value = context.programs.getPublicKey(
-      'splSystem',
-      '11111111111111111111111111111111'
+      "splSystem",
+      "11111111111111111111111111111111"
     );
     resolvedAccounts.systemProgram.isWritable = false;
   }
   if (!resolvedAccounts.tokenProgram.value) {
     resolvedAccounts.tokenProgram.value = context.programs.getPublicKey(
-      'splToken',
-      'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
+      "splToken",
+      "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
     );
     resolvedAccounts.tokenProgram.isWritable = false;
   }
@@ -137,7 +137,7 @@ export function addSupportedTokenDetails(
   // Keys and Signers.
   const [keys, signers] = getAccountMetasAndSigners(
     orderedAccounts,
-    'programId',
+    "programId",
     programId
   );
 

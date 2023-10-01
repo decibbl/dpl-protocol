@@ -6,7 +6,7 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { Serializer, scalarEnum } from '@metaplex-foundation/umi/serializers';
+import { Serializer, scalarEnum } from "@metaplex-foundation/umi/serializers";
 
 export enum Action {
   Update,
@@ -16,7 +16,7 @@ export enum Action {
 export type ActionArgs = Action;
 
 export function getActionSerializer(): Serializer<ActionArgs, Action> {
-  return scalarEnum<Action>(Action, { description: 'Action' }) as Serializer<
+  return scalarEnum<Action>(Action, { description: "Action" }) as Serializer<
     ActionArgs,
     Action
   >;

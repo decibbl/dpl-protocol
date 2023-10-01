@@ -20,7 +20,7 @@ import {
   deserializeAccount,
   gpaBuilder,
   publicKey as toPublicKey,
-} from '@metaplex-foundation/umi';
+} from "@metaplex-foundation/umi";
 import {
   Serializer,
   array,
@@ -29,10 +29,11 @@ import {
   mapSerializer,
   option,
   publicKey as publicKeySerializer,
+  string,
   struct,
   u64,
   u8,
-} from '@metaplex-foundation/umi/serializers';
+} from "@metaplex-foundation/umi/serializers";
 
 export type List = Account<ListAccountData>;
 
@@ -80,17 +81,17 @@ export function getListAccountDataSerializer(): Serializer<
   return mapSerializer<ListAccountDataArgs, any, ListAccountData>(
     struct<ListAccountData>(
       [
-        ['discriminator', array(u8(), { size: 8 })],
-        ['authority', publicKeySerializer()],
-        ['startTimestamp', i64()],
-        ['price', u64()],
-        ['paymentMint', publicKeySerializer()],
-        ['tokenAccount', publicKeySerializer()],
-        ['mint', publicKeySerializer()],
-        ['isClaimable', bool()],
-        ['buyer', option(publicKeySerializer())],
+        ["discriminator", array(u8(), { size: 8 })],
+        ["authority", publicKeySerializer()],
+        ["startTimestamp", i64()],
+        ["price", u64()],
+        ["paymentMint", publicKeySerializer()],
+        ["tokenAccount", publicKeySerializer()],
+        ["mint", publicKeySerializer()],
+        ["isClaimable", bool()],
+        ["buyer", option(publicKeySerializer())],
       ],
-      { description: 'ListAccountData' }
+      { description: "ListAccountData" }
     ),
     (value) => ({
       ...value,
@@ -104,7 +105,7 @@ export function deserializeList(rawAccount: RpcAccount): List {
 }
 
 export async function fetchList(
-  context: Pick<Context, 'rpc'>,
+  context: Pick<Context, "rpc">,
   publicKey: PublicKey | Pda,
   options?: RpcGetAccountOptions
 ): Promise<List> {
@@ -112,12 +113,12 @@ export async function fetchList(
     toPublicKey(publicKey, false),
     options
   );
-  assertAccountExists(maybeAccount, 'List');
+  assertAccountExists(maybeAccount, "List");
   return deserializeList(maybeAccount);
 }
 
 export async function safeFetchList(
-  context: Pick<Context, 'rpc'>,
+  context: Pick<Context, "rpc">,
   publicKey: PublicKey | Pda,
   options?: RpcGetAccountOptions
 ): Promise<List | null> {
@@ -129,7 +130,7 @@ export async function safeFetchList(
 }
 
 export async function fetchAllList(
-  context: Pick<Context, 'rpc'>,
+  context: Pick<Context, "rpc">,
   publicKeys: Array<PublicKey | Pda>,
   options?: RpcGetAccountsOptions
 ): Promise<List[]> {
@@ -138,13 +139,13 @@ export async function fetchAllList(
     options
   );
   return maybeAccounts.map((maybeAccount) => {
-    assertAccountExists(maybeAccount, 'List');
+    assertAccountExists(maybeAccount, "List");
     return deserializeList(maybeAccount);
   });
 }
 
 export async function safeFetchAllList(
-  context: Pick<Context, 'rpc'>,
+  context: Pick<Context, "rpc">,
   publicKeys: Array<PublicKey | Pda>,
   options?: RpcGetAccountsOptions
 ): Promise<List[]> {
@@ -157,10 +158,10 @@ export async function safeFetchAllList(
     .map((maybeAccount) => deserializeList(maybeAccount as RpcAccount));
 }
 
-export function getListGpaBuilder(context: Pick<Context, 'rpc' | 'programs'>) {
+export function getListGpaBuilder(context: Pick<Context, "rpc" | "programs">) {
   const programId = context.programs.getPublicKey(
-    'dplProtocol',
-    'ywpMZZNG3Nx1Bu2deJCcNxzUUoWSm6YwN9r9jCF8art'
+    "dplProtocol",
+    "ywpMZZNG3Nx1Bu2deJCcNxzUUoWSm6YwN9r9jCF8art"
   );
   return gpaBuilder(context, programId)
     .registerFields<{
@@ -185,5 +186,40 @@ export function getListGpaBuilder(context: Pick<Context, 'rpc' | 'programs'>) {
       buyer: [153, option(publicKeySerializer())],
     })
     .deserializeUsing<List>((account) => deserializeList(account))
-    .whereField('discriminator', [169, 24, 186, 110, 22, 139, 190, 82]);
+    .whereField("discriminator", [169, 24, 186, 110, 22, 139, 190, 82]);
+}
+
+export function findListPda(
+  context: Pick<Context, "eddsa" | "programs">,
+  seeds: {
+    authority: PublicKey;
+
+    listingStartsAt: number | bigint;
+  }
+): Pda {
+  const programId = context.programs.getPublicKey(
+    "dplProtocol",
+    "ywpMZZNG3Nx1Bu2deJCcNxzUUoWSm6YwN9r9jCF8art"
+  );
+  return context.eddsa.findPda(programId, [
+    string({ size: "variable" }).serialize("list"),
+    publicKeySerializer().serialize(seeds.authority),
+    i64().serialize(seeds.listingStartsAt),
+  ]);
+}
+
+export async function fetchListFromSeeds(
+  context: Pick<Context, "eddsa" | "programs" | "rpc">,
+  seeds: Parameters<typeof findListPda>[1],
+  options?: RpcGetAccountOptions
+): Promise<List> {
+  return fetchList(context, findListPda(context, seeds), options);
+}
+
+export async function safeFetchListFromSeeds(
+  context: Pick<Context, "eddsa" | "programs" | "rpc">,
+  seeds: Parameters<typeof findListPda>[1],
+  options?: RpcGetAccountOptions
+): Promise<List | null> {
+  return safeFetchList(context, findListPda(context, seeds), options);
 }

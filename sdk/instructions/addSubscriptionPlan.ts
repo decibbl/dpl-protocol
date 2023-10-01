@@ -13,24 +13,24 @@ import {
   Signer,
   TransactionBuilder,
   transactionBuilder,
-} from '@metaplex-foundation/umi';
+} from "@metaplex-foundation/umi";
 import {
   Serializer,
   array,
   mapSerializer,
   struct,
   u8,
-} from '@metaplex-foundation/umi/serializers';
+} from "@metaplex-foundation/umi/serializers";
 import {
   ResolvedAccount,
   ResolvedAccountsWithIndices,
   getAccountMetasAndSigners,
-} from '../shared';
+} from "../shared";
 import {
   SubscriptionPlan,
   SubscriptionPlanArgs,
   getSubscriptionPlanSerializer,
-} from '../types';
+} from "../types";
 
 // Accounts.
 export type AddSubscriptionPlanInstructionAccounts = {
@@ -65,10 +65,10 @@ export function getAddSubscriptionPlanInstructionDataSerializer(): Serializer<
   >(
     struct<AddSubscriptionPlanInstructionData>(
       [
-        ['discriminator', array(u8(), { size: 8 })],
-        ['plan', getSubscriptionPlanSerializer()],
+        ["discriminator", array(u8(), { size: 8 })],
+        ["plan", getSubscriptionPlanSerializer()],
       ],
-      { description: 'AddSubscriptionPlanInstructionData' }
+      { description: "AddSubscriptionPlanInstructionData" }
     ),
     (value) => ({
       ...value,
@@ -86,14 +86,14 @@ export type AddSubscriptionPlanInstructionArgs =
 
 // Instruction.
 export function addSubscriptionPlan(
-  context: Pick<Context, 'identity' | 'programs'>,
+  context: Pick<Context, "identity" | "programs">,
   input: AddSubscriptionPlanInstructionAccounts &
     AddSubscriptionPlanInstructionArgs
 ): TransactionBuilder {
   // Program ID.
   const programId = context.programs.getPublicKey(
-    'dplProtocol',
-    'ywpMZZNG3Nx1Bu2deJCcNxzUUoWSm6YwN9r9jCF8art'
+    "dplProtocol",
+    "ywpMZZNG3Nx1Bu2deJCcNxzUUoWSm6YwN9r9jCF8art"
   );
 
   // Accounts.
@@ -124,7 +124,7 @@ export function addSubscriptionPlan(
   // Keys and Signers.
   const [keys, signers] = getAccountMetasAndSigners(
     orderedAccounts,
-    'programId',
+    "programId",
     programId
   );
 

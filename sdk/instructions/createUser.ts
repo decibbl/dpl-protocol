@@ -14,20 +14,20 @@ import {
   TransactionBuilder,
   publicKey,
   transactionBuilder,
-} from '@metaplex-foundation/umi';
+} from "@metaplex-foundation/umi";
 import {
   Serializer,
   array,
   mapSerializer,
   struct,
   u8,
-} from '@metaplex-foundation/umi/serializers';
+} from "@metaplex-foundation/umi/serializers";
 import {
   ResolvedAccount,
   ResolvedAccountsWithIndices,
   getAccountMetasAndSigners,
-} from '../shared';
-import { AssetData, AssetDataArgs, getAssetDataSerializer } from '../types';
+} from "../shared";
+import { AssetData, AssetDataArgs, getAssetDataSerializer } from "../types";
 
 // Accounts.
 export type CreateUserInstructionAccounts = {
@@ -70,10 +70,10 @@ export function getCreateUserInstructionDataSerializer(): Serializer<
   >(
     struct<CreateUserInstructionData>(
       [
-        ['discriminator', array(u8(), { size: 8 })],
-        ['assetData', getAssetDataSerializer()],
+        ["discriminator", array(u8(), { size: 8 })],
+        ["assetData", getAssetDataSerializer()],
       ],
-      { description: 'CreateUserInstructionData' }
+      { description: "CreateUserInstructionData" }
     ),
     (value) => ({
       ...value,
@@ -87,13 +87,13 @@ export type CreateUserInstructionArgs = CreateUserInstructionDataArgs;
 
 // Instruction.
 export function createUser(
-  context: Pick<Context, 'identity' | 'programs'>,
+  context: Pick<Context, "identity" | "programs">,
   input: CreateUserInstructionAccounts & CreateUserInstructionArgs
 ): TransactionBuilder {
   // Program ID.
   const programId = context.programs.getPublicKey(
-    'dplProtocol',
-    'ywpMZZNG3Nx1Bu2deJCcNxzUUoWSm6YwN9r9jCF8art'
+    "dplProtocol",
+    "ywpMZZNG3Nx1Bu2deJCcNxzUUoWSm6YwN9r9jCF8art"
   );
 
   // Accounts.
@@ -169,21 +169,21 @@ export function createUser(
   }
   if (!resolvedAccounts.systemProgram.value) {
     resolvedAccounts.systemProgram.value = context.programs.getPublicKey(
-      'splSystem',
-      '11111111111111111111111111111111'
+      "splSystem",
+      "11111111111111111111111111111111"
     );
     resolvedAccounts.systemProgram.isWritable = false;
   }
   if (!resolvedAccounts.tokenProgram.value) {
     resolvedAccounts.tokenProgram.value = context.programs.getPublicKey(
-      'splToken',
-      'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
+      "splToken",
+      "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
     );
     resolvedAccounts.tokenProgram.isWritable = false;
   }
   if (!resolvedAccounts.sysvarInstructions.value) {
     resolvedAccounts.sysvarInstructions.value = publicKey(
-      'Sysvar1nstructions1111111111111111111111111'
+      "Sysvar1nstructions1111111111111111111111111"
     );
   }
 
@@ -195,7 +195,7 @@ export function createUser(
   // Keys and Signers.
   const [keys, signers] = getAccountMetasAndSigners(
     orderedAccounts,
-    'programId',
+    "programId",
     programId
   );
 

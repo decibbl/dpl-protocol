@@ -6,7 +6,7 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { Serializer, scalarEnum } from '@metaplex-foundation/umi/serializers';
+import { Serializer, scalarEnum } from "@metaplex-foundation/umi/serializers";
 
 export enum UseMethod {
   Burn,
@@ -18,6 +18,6 @@ export type UseMethodArgs = UseMethod;
 
 export function getUseMethodSerializer(): Serializer<UseMethodArgs, UseMethod> {
   return scalarEnum<UseMethod>(UseMethod, {
-    description: 'UseMethod',
+    description: "UseMethod",
   }) as Serializer<UseMethodArgs, UseMethod>;
 }

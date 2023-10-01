@@ -6,13 +6,13 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { PublicKey } from '@metaplex-foundation/umi';
+import { PublicKey } from "@metaplex-foundation/umi";
 import {
   Serializer,
   bool,
   publicKey as publicKeySerializer,
   struct,
-} from '@metaplex-foundation/umi/serializers';
+} from "@metaplex-foundation/umi/serializers";
 
 export type MCollection = { verified: boolean; key: PublicKey };
 
@@ -24,9 +24,9 @@ export function getMCollectionSerializer(): Serializer<
 > {
   return struct<MCollection>(
     [
-      ['verified', bool()],
-      ['key', publicKeySerializer()],
+      ["verified", bool()],
+      ["key", publicKeySerializer()],
     ],
-    { description: 'MCollection' }
+    { description: "MCollection" }
   ) as Serializer<MCollectionArgs, MCollection>;
 }

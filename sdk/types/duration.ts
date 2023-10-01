@@ -6,7 +6,7 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { Serializer, scalarEnum } from '@metaplex-foundation/umi/serializers';
+import { Serializer, scalarEnum } from "@metaplex-foundation/umi/serializers";
 
 /** allowed durations (in weeks) */
 export enum Duration {
@@ -21,6 +21,6 @@ export type DurationArgs = Duration;
 
 export function getDurationSerializer(): Serializer<DurationArgs, Duration> {
   return scalarEnum<Duration>(Duration, {
-    description: 'Duration',
+    description: "Duration",
   }) as Serializer<DurationArgs, Duration>;
 }

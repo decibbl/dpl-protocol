@@ -6,7 +6,7 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { Program, ProgramError } from '@metaplex-foundation/umi';
+import { Program, ProgramError } from "@metaplex-foundation/umi";
 
 type ProgramErrorConstructor = new (
   program: Program,
@@ -17,279 +17,279 @@ const nameToErrorMap: Map<string, ProgramErrorConstructor> = new Map();
 
 /** DomainLenTooLarge: Domain length too large */
 export class DomainLenTooLargeError extends ProgramError {
-  readonly name: string = 'DomainLenTooLarge';
+  readonly name: string = "DomainLenTooLarge";
 
   readonly code: number = 0x1770; // 6000
 
   constructor(program: Program, cause?: Error) {
-    super('Domain length too large', program, cause);
+    super("Domain length too large", program, cause);
   }
 }
 codeToErrorMap.set(0x1770, DomainLenTooLargeError);
-nameToErrorMap.set('DomainLenTooLarge', DomainLenTooLargeError);
+nameToErrorMap.set("DomainLenTooLarge", DomainLenTooLargeError);
 
 /** DuplicateSupportedTokenDetails: Duplicate supported token details */
 export class DuplicateSupportedTokenDetailsError extends ProgramError {
-  readonly name: string = 'DuplicateSupportedTokenDetails';
+  readonly name: string = "DuplicateSupportedTokenDetails";
 
   readonly code: number = 0x1771; // 6001
 
   constructor(program: Program, cause?: Error) {
-    super('Duplicate supported token details', program, cause);
+    super("Duplicate supported token details", program, cause);
   }
 }
 codeToErrorMap.set(0x1771, DuplicateSupportedTokenDetailsError);
 nameToErrorMap.set(
-  'DuplicateSupportedTokenDetails',
+  "DuplicateSupportedTokenDetails",
   DuplicateSupportedTokenDetailsError
 );
 
 /** SubscriptionPlanAlreadyExist: Subscription plan already exist */
 export class SubscriptionPlanAlreadyExistError extends ProgramError {
-  readonly name: string = 'SubscriptionPlanAlreadyExist';
+  readonly name: string = "SubscriptionPlanAlreadyExist";
 
   readonly code: number = 0x1772; // 6002
 
   constructor(program: Program, cause?: Error) {
-    super('Subscription plan already exist', program, cause);
+    super("Subscription plan already exist", program, cause);
   }
 }
 codeToErrorMap.set(0x1772, SubscriptionPlanAlreadyExistError);
 nameToErrorMap.set(
-  'SubscriptionPlanAlreadyExist',
+  "SubscriptionPlanAlreadyExist",
   SubscriptionPlanAlreadyExistError
 );
 
 /** NoSubscriptionDetails: No subscription details found */
 export class NoSubscriptionDetailsError extends ProgramError {
-  readonly name: string = 'NoSubscriptionDetails';
+  readonly name: string = "NoSubscriptionDetails";
 
   readonly code: number = 0x1773; // 6003
 
   constructor(program: Program, cause?: Error) {
-    super('No subscription details found', program, cause);
+    super("No subscription details found", program, cause);
   }
 }
 codeToErrorMap.set(0x1773, NoSubscriptionDetailsError);
-nameToErrorMap.set('NoSubscriptionDetails', NoSubscriptionDetailsError);
+nameToErrorMap.set("NoSubscriptionDetails", NoSubscriptionDetailsError);
 
 /** SubscriptionPlanNotFound: Subscription plan not found */
 export class SubscriptionPlanNotFoundError extends ProgramError {
-  readonly name: string = 'SubscriptionPlanNotFound';
+  readonly name: string = "SubscriptionPlanNotFound";
 
   readonly code: number = 0x1774; // 6004
 
   constructor(program: Program, cause?: Error) {
-    super('Subscription plan not found', program, cause);
+    super("Subscription plan not found", program, cause);
   }
 }
 codeToErrorMap.set(0x1774, SubscriptionPlanNotFoundError);
-nameToErrorMap.set('SubscriptionPlanNotFound', SubscriptionPlanNotFoundError);
+nameToErrorMap.set("SubscriptionPlanNotFound", SubscriptionPlanNotFoundError);
 
 /** SupportedTokenNotFound: Supported token not found */
 export class SupportedTokenNotFoundError extends ProgramError {
-  readonly name: string = 'SupportedTokenNotFound';
+  readonly name: string = "SupportedTokenNotFound";
 
   readonly code: number = 0x1775; // 6005
 
   constructor(program: Program, cause?: Error) {
-    super('Supported token not found', program, cause);
+    super("Supported token not found", program, cause);
   }
 }
 codeToErrorMap.set(0x1775, SupportedTokenNotFoundError);
-nameToErrorMap.set('SupportedTokenNotFound', SupportedTokenNotFoundError);
+nameToErrorMap.set("SupportedTokenNotFound", SupportedTokenNotFoundError);
 
 /** InvalidMint: Invalid mint */
 export class InvalidMintError extends ProgramError {
-  readonly name: string = 'InvalidMint';
+  readonly name: string = "InvalidMint";
 
   readonly code: number = 0x1776; // 6006
 
   constructor(program: Program, cause?: Error) {
-    super('Invalid mint', program, cause);
+    super("Invalid mint", program, cause);
   }
 }
 codeToErrorMap.set(0x1776, InvalidMintError);
-nameToErrorMap.set('InvalidMint', InvalidMintError);
+nameToErrorMap.set("InvalidMint", InvalidMintError);
 
 /** AlreadySubscribed: Already subscribed */
 export class AlreadySubscribedError extends ProgramError {
-  readonly name: string = 'AlreadySubscribed';
+  readonly name: string = "AlreadySubscribed";
 
   readonly code: number = 0x1777; // 6007
 
   constructor(program: Program, cause?: Error) {
-    super('Already subscribed', program, cause);
+    super("Already subscribed", program, cause);
   }
 }
 codeToErrorMap.set(0x1777, AlreadySubscribedError);
-nameToErrorMap.set('AlreadySubscribed', AlreadySubscribedError);
+nameToErrorMap.set("AlreadySubscribed", AlreadySubscribedError);
 
 /** NotSubscribed: Not subscribed */
 export class NotSubscribedError extends ProgramError {
-  readonly name: string = 'NotSubscribed';
+  readonly name: string = "NotSubscribed";
 
   readonly code: number = 0x1778; // 6008
 
   constructor(program: Program, cause?: Error) {
-    super('Not subscribed', program, cause);
+    super("Not subscribed", program, cause);
   }
 }
 codeToErrorMap.set(0x1778, NotSubscribedError);
-nameToErrorMap.set('NotSubscribed', NotSubscribedError);
+nameToErrorMap.set("NotSubscribed", NotSubscribedError);
 
 /** InvalidSupportTokenDetails: Invalid supported token details */
 export class InvalidSupportTokenDetailsError extends ProgramError {
-  readonly name: string = 'InvalidSupportTokenDetails';
+  readonly name: string = "InvalidSupportTokenDetails";
 
   readonly code: number = 0x1779; // 6009
 
   constructor(program: Program, cause?: Error) {
-    super('Invalid supported token details', program, cause);
+    super("Invalid supported token details", program, cause);
   }
 }
 codeToErrorMap.set(0x1779, InvalidSupportTokenDetailsError);
 nameToErrorMap.set(
-  'InvalidSupportTokenDetails',
+  "InvalidSupportTokenDetails",
   InvalidSupportTokenDetailsError
 );
 
 /** InsufficientBalance: Insufficient balance */
 export class InsufficientBalanceError extends ProgramError {
-  readonly name: string = 'InsufficientBalance';
+  readonly name: string = "InsufficientBalance";
 
   readonly code: number = 0x177a; // 6010
 
   constructor(program: Program, cause?: Error) {
-    super('Insufficient balance', program, cause);
+    super("Insufficient balance", program, cause);
   }
 }
 codeToErrorMap.set(0x177a, InsufficientBalanceError);
-nameToErrorMap.set('InsufficientBalance', InsufficientBalanceError);
+nameToErrorMap.set("InsufficientBalance", InsufficientBalanceError);
 
 /** InvalidSubscriptionPlan: Invalid subscription plan */
 export class InvalidSubscriptionPlanError extends ProgramError {
-  readonly name: string = 'InvalidSubscriptionPlan';
+  readonly name: string = "InvalidSubscriptionPlan";
 
   readonly code: number = 0x177b; // 6011
 
   constructor(program: Program, cause?: Error) {
-    super('Invalid subscription plan', program, cause);
+    super("Invalid subscription plan", program, cause);
   }
 }
 codeToErrorMap.set(0x177b, InvalidSubscriptionPlanError);
-nameToErrorMap.set('InvalidSubscriptionPlan', InvalidSubscriptionPlanError);
+nameToErrorMap.set("InvalidSubscriptionPlan", InvalidSubscriptionPlanError);
 
 /** InvalidApprovalDuration: Invalid approval duration */
 export class InvalidApprovalDurationError extends ProgramError {
-  readonly name: string = 'InvalidApprovalDuration';
+  readonly name: string = "InvalidApprovalDuration";
 
   readonly code: number = 0x177c; // 6012
 
   constructor(program: Program, cause?: Error) {
-    super('Invalid approval duration', program, cause);
+    super("Invalid approval duration", program, cause);
   }
 }
 codeToErrorMap.set(0x177c, InvalidApprovalDurationError);
-nameToErrorMap.set('InvalidApprovalDuration', InvalidApprovalDurationError);
+nameToErrorMap.set("InvalidApprovalDuration", InvalidApprovalDurationError);
 
 /** InvalidPlatformAuthority: Invalid platform authority */
 export class InvalidPlatformAuthorityError extends ProgramError {
-  readonly name: string = 'InvalidPlatformAuthority';
+  readonly name: string = "InvalidPlatformAuthority";
 
   readonly code: number = 0x177d; // 6013
 
   constructor(program: Program, cause?: Error) {
-    super('Invalid platform authority', program, cause);
+    super("Invalid platform authority", program, cause);
   }
 }
 codeToErrorMap.set(0x177d, InvalidPlatformAuthorityError);
-nameToErrorMap.set('InvalidPlatformAuthority', InvalidPlatformAuthorityError);
+nameToErrorMap.set("InvalidPlatformAuthority", InvalidPlatformAuthorityError);
 
 /** NoDelegateAuthority: No delegate authority */
 export class NoDelegateAuthorityError extends ProgramError {
-  readonly name: string = 'NoDelegateAuthority';
+  readonly name: string = "NoDelegateAuthority";
 
   readonly code: number = 0x177e; // 6014
 
   constructor(program: Program, cause?: Error) {
-    super('No delegate authority', program, cause);
+    super("No delegate authority", program, cause);
   }
 }
 codeToErrorMap.set(0x177e, NoDelegateAuthorityError);
-nameToErrorMap.set('NoDelegateAuthority', NoDelegateAuthorityError);
+nameToErrorMap.set("NoDelegateAuthority", NoDelegateAuthorityError);
 
 /** InsufficientDelegateBalance: Insufficient delegate balance */
 export class InsufficientDelegateBalanceError extends ProgramError {
-  readonly name: string = 'InsufficientDelegateBalance';
+  readonly name: string = "InsufficientDelegateBalance";
 
   readonly code: number = 0x177f; // 6015
 
   constructor(program: Program, cause?: Error) {
-    super('Insufficient delegate balance', program, cause);
+    super("Insufficient delegate balance", program, cause);
   }
 }
 codeToErrorMap.set(0x177f, InsufficientDelegateBalanceError);
 nameToErrorMap.set(
-  'InsufficientDelegateBalance',
+  "InsufficientDelegateBalance",
   InsufficientDelegateBalanceError
 );
 
 /** InvalidUnsubscribe: Unsubscribe after current subscription end timestamp */
 export class InvalidUnsubscribeError extends ProgramError {
-  readonly name: string = 'InvalidUnsubscribe';
+  readonly name: string = "InvalidUnsubscribe";
 
   readonly code: number = 0x1780; // 6016
 
   constructor(program: Program, cause?: Error) {
     super(
-      'Unsubscribe after current subscription end timestamp',
+      "Unsubscribe after current subscription end timestamp",
       program,
       cause
     );
   }
 }
 codeToErrorMap.set(0x1780, InvalidUnsubscribeError);
-nameToErrorMap.set('InvalidUnsubscribe', InvalidUnsubscribeError);
+nameToErrorMap.set("InvalidUnsubscribe", InvalidUnsubscribeError);
 
 /** ListingNotAllowed: Listing not allowed */
 export class ListingNotAllowedError extends ProgramError {
-  readonly name: string = 'ListingNotAllowed';
+  readonly name: string = "ListingNotAllowed";
 
   readonly code: number = 0x1781; // 6017
 
   constructor(program: Program, cause?: Error) {
-    super('Listing not allowed', program, cause);
+    super("Listing not allowed", program, cause);
   }
 }
 codeToErrorMap.set(0x1781, ListingNotAllowedError);
-nameToErrorMap.set('ListingNotAllowed', ListingNotAllowedError);
+nameToErrorMap.set("ListingNotAllowed", ListingNotAllowedError);
 
 /** NotClaimable: Not claimable */
 export class NotClaimableError extends ProgramError {
-  readonly name: string = 'NotClaimable';
+  readonly name: string = "NotClaimable";
 
   readonly code: number = 0x1782; // 6018
 
   constructor(program: Program, cause?: Error) {
-    super('Not claimable', program, cause);
+    super("Not claimable", program, cause);
   }
 }
 codeToErrorMap.set(0x1782, NotClaimableError);
-nameToErrorMap.set('NotClaimable', NotClaimableError);
+nameToErrorMap.set("NotClaimable", NotClaimableError);
 
 /** InvalidBuyer: Invalid buyer */
 export class InvalidBuyerError extends ProgramError {
-  readonly name: string = 'InvalidBuyer';
+  readonly name: string = "InvalidBuyer";
 
   readonly code: number = 0x1783; // 6019
 
   constructor(program: Program, cause?: Error) {
-    super('Invalid buyer', program, cause);
+    super("Invalid buyer", program, cause);
   }
 }
 codeToErrorMap.set(0x1783, InvalidBuyerError);
-nameToErrorMap.set('InvalidBuyer', InvalidBuyerError);
+nameToErrorMap.set("InvalidBuyer", InvalidBuyerError);
 
 /**
  * Attempts to resolve a custom program error from the provided error code.

@@ -6,20 +6,20 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-export * from './action';
-export * from './assetData';
-export * from './collectionDetails';
-export * from './creator';
-export * from './duration';
-export * from './mCollection';
-export * from './mUses';
-export * from './platformDetails';
-export * from './printArgs';
-export * from './printSupply';
-export * from './subscriptionDetails';
-export * from './subscriptionPlan';
-export * from './subscriptionPlanDetails';
-export * from './supportedToken';
-export * from './tokenStandard';
-export * from './useMethod';
-export * from './uses';
+export * from "./action";
+export * from "./assetData";
+export * from "./collectionDetails";
+export * from "./creator";
+export * from "./duration";
+export * from "./mCollection";
+export * from "./mUses";
+export * from "./platformDetails";
+export * from "./printArgs";
+export * from "./printSupply";
+export * from "./subscriptionDetails";
+export * from "./subscriptionPlan";
+export * from "./subscriptionPlanDetails";
+export * from "./supportedToken";
+export * from "./tokenStandard";
+export * from "./useMethod";
+export * from "./uses";

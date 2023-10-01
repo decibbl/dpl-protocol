@@ -13,19 +13,19 @@ import {
   Signer,
   TransactionBuilder,
   transactionBuilder,
-} from '@metaplex-foundation/umi';
+} from "@metaplex-foundation/umi";
 import {
   Serializer,
   array,
   mapSerializer,
   struct,
   u8,
-} from '@metaplex-foundation/umi/serializers';
+} from "@metaplex-foundation/umi/serializers";
 import {
   ResolvedAccount,
   ResolvedAccountsWithIndices,
   getAccountMetasAndSigners,
-} from '../shared';
+} from "../shared";
 import {
   Action,
   ActionArgs,
@@ -33,7 +33,7 @@ import {
   SubscriptionDetailsArgs,
   getActionSerializer,
   getSubscriptionDetailsSerializer,
-} from '../types';
+} from "../types";
 
 // Accounts.
 export type UpdateSubscriptionDetailsInstructionAccounts = {
@@ -66,11 +66,11 @@ export function getUpdateSubscriptionDetailsInstructionDataSerializer(): Seriali
   >(
     struct<UpdateSubscriptionDetailsInstructionData>(
       [
-        ['discriminator', array(u8(), { size: 8 })],
-        ['subscriptionDetail', getSubscriptionDetailsSerializer()],
-        ['action', getActionSerializer()],
+        ["discriminator", array(u8(), { size: 8 })],
+        ["subscriptionDetail", getSubscriptionDetailsSerializer()],
+        ["action", getActionSerializer()],
       ],
-      { description: 'UpdateSubscriptionDetailsInstructionData' }
+      { description: "UpdateSubscriptionDetailsInstructionData" }
     ),
     (value) => ({
       ...value,
@@ -88,14 +88,14 @@ export type UpdateSubscriptionDetailsInstructionArgs =
 
 // Instruction.
 export function updateSubscriptionDetails(
-  context: Pick<Context, 'identity' | 'programs'>,
+  context: Pick<Context, "identity" | "programs">,
   input: UpdateSubscriptionDetailsInstructionAccounts &
     UpdateSubscriptionDetailsInstructionArgs
 ): TransactionBuilder {
   // Program ID.
   const programId = context.programs.getPublicKey(
-    'dplProtocol',
-    'ywpMZZNG3Nx1Bu2deJCcNxzUUoWSm6YwN9r9jCF8art'
+    "dplProtocol",
+    "ywpMZZNG3Nx1Bu2deJCcNxzUUoWSm6YwN9r9jCF8art"
   );
 
   // Accounts.
@@ -120,7 +120,7 @@ export function updateSubscriptionDetails(
   // Keys and Signers.
   const [keys, signers] = getAccountMetasAndSigners(
     orderedAccounts,
-    'programId',
+    "programId",
     programId
   );
 

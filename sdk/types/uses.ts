@@ -11,7 +11,7 @@ import {
   i64,
   struct,
   u64,
-} from '@metaplex-foundation/umi/serializers';
+} from "@metaplex-foundation/umi/serializers";
 
 export type Uses = {
   /** total number of usage till last cycle */
@@ -30,9 +30,9 @@ export type UsesArgs = {
 export function getUsesSerializer(): Serializer<UsesArgs, Uses> {
   return struct<Uses>(
     [
-      ['total', u64()],
-      ['lastCycle', i64()],
+      ["total", u64()],
+      ["lastCycle", i64()],
     ],
-    { description: 'Uses' }
+    { description: "Uses" }
   ) as Serializer<UsesArgs, Uses>;
 }

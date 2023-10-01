@@ -6,7 +6,7 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { Option, OptionOrNullable, PublicKey } from '@metaplex-foundation/umi';
+import { Option, OptionOrNullable, PublicKey } from "@metaplex-foundation/umi";
 import {
   Serializer,
   array,
@@ -16,7 +16,7 @@ import {
   string,
   struct,
   u16,
-} from '@metaplex-foundation/umi/serializers';
+} from "@metaplex-foundation/umi/serializers";
 import {
   CollectionDetails,
   CollectionDetailsArgs,
@@ -33,7 +33,7 @@ import {
   getMCollectionSerializer,
   getMUsesSerializer,
   getTokenStandardSerializer,
-} from '.';
+} from ".";
 
 /** Data representation of an asset. */
 export type AssetData = {
@@ -89,19 +89,19 @@ export type AssetDataArgs = {
 export function getAssetDataSerializer(): Serializer<AssetDataArgs, AssetData> {
   return struct<AssetData>(
     [
-      ['name', string()],
-      ['symbol', string()],
-      ['uri', string()],
-      ['sellerFeeBasisPoints', u16()],
-      ['creators', option(array(getCreatorSerializer()))],
-      ['primarySaleHappened', bool()],
-      ['isMutable', bool()],
-      ['tokenStandard', getTokenStandardSerializer()],
-      ['collection', option(getMCollectionSerializer())],
-      ['uses', option(getMUsesSerializer())],
-      ['collectionDetails', option(getCollectionDetailsSerializer())],
-      ['ruleSet', option(publicKeySerializer())],
+      ["name", string()],
+      ["symbol", string()],
+      ["uri", string()],
+      ["sellerFeeBasisPoints", u16()],
+      ["creators", option(array(getCreatorSerializer()))],
+      ["primarySaleHappened", bool()],
+      ["isMutable", bool()],
+      ["tokenStandard", getTokenStandardSerializer()],
+      ["collection", option(getMCollectionSerializer())],
+      ["uses", option(getMUsesSerializer())],
+      ["collectionDetails", option(getCollectionDetailsSerializer())],
+      ["ruleSet", option(publicKeySerializer())],
     ],
-    { description: 'AssetData' }
+    { description: "AssetData" }
   ) as Serializer<AssetDataArgs, AssetData>;
 }

@@ -6,18 +6,18 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { PublicKey } from '@metaplex-foundation/umi';
+import { PublicKey } from "@metaplex-foundation/umi";
 import {
   Serializer,
   i64,
   publicKey as publicKeySerializer,
   struct,
-} from '@metaplex-foundation/umi/serializers';
+} from "@metaplex-foundation/umi/serializers";
 import {
   SubscriptionPlan,
   SubscriptionPlanArgs,
   getSubscriptionPlanSerializer,
-} from '.';
+} from ".";
 
 export type SubscriptionPlanDetails = {
   /** mint account of a token used to subscribe */
@@ -47,11 +47,11 @@ export function getSubscriptionPlanDetailsSerializer(): Serializer<
 > {
   return struct<SubscriptionPlanDetails>(
     [
-      ['mint', publicKeySerializer()],
-      ['subscribedPlan', getSubscriptionPlanSerializer()],
-      ['startTimestamp', i64()],
-      ['endTimestamp', i64()],
+      ["mint", publicKeySerializer()],
+      ["subscribedPlan", getSubscriptionPlanSerializer()],
+      ["startTimestamp", i64()],
+      ["endTimestamp", i64()],
     ],
-    { description: 'SubscriptionPlanDetails' }
+    { description: "SubscriptionPlanDetails" }
   ) as Serializer<SubscriptionPlanDetailsArgs, SubscriptionPlanDetails>;
 }

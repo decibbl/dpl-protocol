@@ -18,20 +18,21 @@ import {
   deserializeAccount,
   gpaBuilder,
   publicKey as toPublicKey,
-} from '@metaplex-foundation/umi';
+} from "@metaplex-foundation/umi";
 import {
   Serializer,
   array,
   mapSerializer,
   publicKey as publicKeySerializer,
+  string,
   struct,
   u8,
-} from '@metaplex-foundation/umi/serializers';
+} from "@metaplex-foundation/umi/serializers";
 import {
   PlatformDetails,
   PlatformDetailsArgs,
   getPlatformDetailsSerializer,
-} from '../types';
+} from "../types";
 
 export type Artist = Account<ArtistAccountData>;
 
@@ -61,12 +62,12 @@ export function getArtistAccountDataSerializer(): Serializer<
   return mapSerializer<ArtistAccountDataArgs, any, ArtistAccountData>(
     struct<ArtistAccountData>(
       [
-        ['discriminator', array(u8(), { size: 8 })],
-        ['authority', publicKeySerializer()],
-        ['mint', publicKeySerializer()],
-        ['platforms', getPlatformDetailsSerializer()],
+        ["discriminator", array(u8(), { size: 8 })],
+        ["authority", publicKeySerializer()],
+        ["mint", publicKeySerializer()],
+        ["platforms", getPlatformDetailsSerializer()],
       ],
-      { description: 'ArtistAccountData' }
+      { description: "ArtistAccountData" }
     ),
     (value) => ({
       ...value,
@@ -80,7 +81,7 @@ export function deserializeArtist(rawAccount: RpcAccount): Artist {
 }
 
 export async function fetchArtist(
-  context: Pick<Context, 'rpc'>,
+  context: Pick<Context, "rpc">,
   publicKey: PublicKey | Pda,
   options?: RpcGetAccountOptions
 ): Promise<Artist> {
@@ -88,12 +89,12 @@ export async function fetchArtist(
     toPublicKey(publicKey, false),
     options
   );
-  assertAccountExists(maybeAccount, 'Artist');
+  assertAccountExists(maybeAccount, "Artist");
   return deserializeArtist(maybeAccount);
 }
 
 export async function safeFetchArtist(
-  context: Pick<Context, 'rpc'>,
+  context: Pick<Context, "rpc">,
   publicKey: PublicKey | Pda,
   options?: RpcGetAccountOptions
 ): Promise<Artist | null> {
@@ -105,7 +106,7 @@ export async function safeFetchArtist(
 }
 
 export async function fetchAllArtist(
-  context: Pick<Context, 'rpc'>,
+  context: Pick<Context, "rpc">,
   publicKeys: Array<PublicKey | Pda>,
   options?: RpcGetAccountsOptions
 ): Promise<Artist[]> {
@@ -114,13 +115,13 @@ export async function fetchAllArtist(
     options
   );
   return maybeAccounts.map((maybeAccount) => {
-    assertAccountExists(maybeAccount, 'Artist');
+    assertAccountExists(maybeAccount, "Artist");
     return deserializeArtist(maybeAccount);
   });
 }
 
 export async function safeFetchAllArtist(
-  context: Pick<Context, 'rpc'>,
+  context: Pick<Context, "rpc">,
   publicKeys: Array<PublicKey | Pda>,
   options?: RpcGetAccountsOptions
 ): Promise<Artist[]> {
@@ -134,11 +135,11 @@ export async function safeFetchAllArtist(
 }
 
 export function getArtistGpaBuilder(
-  context: Pick<Context, 'rpc' | 'programs'>
+  context: Pick<Context, "rpc" | "programs">
 ) {
   const programId = context.programs.getPublicKey(
-    'dplProtocol',
-    'ywpMZZNG3Nx1Bu2deJCcNxzUUoWSm6YwN9r9jCF8art'
+    "dplProtocol",
+    "ywpMZZNG3Nx1Bu2deJCcNxzUUoWSm6YwN9r9jCF8art"
   );
   return gpaBuilder(context, programId)
     .registerFields<{
@@ -153,9 +154,41 @@ export function getArtistGpaBuilder(
       platforms: [72, getPlatformDetailsSerializer()],
     })
     .deserializeUsing<Artist>((account) => deserializeArtist(account))
-    .whereField('discriminator', [142, 136, 31, 244, 208, 44, 128, 145]);
+    .whereField("discriminator", [142, 136, 31, 244, 208, 44, 128, 145]);
 }
 
 export function getArtistSize(): number {
   return 136;
+}
+
+export function findArtistPda(
+  context: Pick<Context, "eddsa" | "programs">,
+  seeds: {
+    authority: PublicKey;
+  }
+): Pda {
+  const programId = context.programs.getPublicKey(
+    "dplProtocol",
+    "ywpMZZNG3Nx1Bu2deJCcNxzUUoWSm6YwN9r9jCF8art"
+  );
+  return context.eddsa.findPda(programId, [
+    string({ size: "variable" }).serialize("artist"),
+    publicKeySerializer().serialize(seeds.authority),
+  ]);
+}
+
+export async function fetchArtistFromSeeds(
+  context: Pick<Context, "eddsa" | "programs" | "rpc">,
+  seeds: Parameters<typeof findArtistPda>[1],
+  options?: RpcGetAccountOptions
+): Promise<Artist> {
+  return fetchArtist(context, findArtistPda(context, seeds), options);
+}
+
+export async function safeFetchArtistFromSeeds(
+  context: Pick<Context, "eddsa" | "programs" | "rpc">,
+  seeds: Parameters<typeof findArtistPda>[1],
+  options?: RpcGetAccountOptions
+): Promise<Artist | null> {
+  return safeFetchArtist(context, findArtistPda(context, seeds), options);
 }

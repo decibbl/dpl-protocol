@@ -6,12 +6,12 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { PublicKey } from '@metaplex-foundation/umi';
+import { PublicKey } from "@metaplex-foundation/umi";
 import {
   Serializer,
   publicKey as publicKeySerializer,
   struct,
-} from '@metaplex-foundation/umi/serializers';
+} from "@metaplex-foundation/umi/serializers";
 
 export type PlatformDetails = {
   /** platform PDA address */
@@ -32,9 +32,9 @@ export function getPlatformDetailsSerializer(): Serializer<
 > {
   return struct<PlatformDetails>(
     [
-      ['address', publicKeySerializer()],
-      ['mint', publicKeySerializer()],
+      ["address", publicKeySerializer()],
+      ["mint", publicKeySerializer()],
     ],
-    { description: 'PlatformDetails' }
+    { description: "PlatformDetails" }
   ) as Serializer<PlatformDetailsArgs, PlatformDetails>;
 }

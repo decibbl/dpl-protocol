@@ -6,9 +6,9 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-export * from './artist';
-export * from './artwork';
-export * from './collection';
-export * from './list';
-export * from './platform';
-export * from './user';
+export * from "./artist";
+export * from "./artwork";
+export * from "./collection";
+export * from "./list";
+export * from "./platform";
+export * from "./user";

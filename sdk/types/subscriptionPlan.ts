@@ -11,8 +11,8 @@ import {
   struct,
   u64,
   u8,
-} from '@metaplex-foundation/umi/serializers';
-import { Duration, DurationArgs, getDurationSerializer } from '.';
+} from "@metaplex-foundation/umi/serializers";
+import { Duration, DurationArgs, getDurationSerializer } from ".";
 
 export type SubscriptionPlan = {
   /** plan id */
@@ -38,10 +38,10 @@ export function getSubscriptionPlanSerializer(): Serializer<
 > {
   return struct<SubscriptionPlan>(
     [
-      ['id', u8()],
-      ['duration', getDurationSerializer()],
-      ['price', u64()],
+      ["id", u8()],
+      ["duration", getDurationSerializer()],
+      ["price", u64()],
     ],
-    { description: 'SubscriptionPlan' }
+    { description: "SubscriptionPlan" }
   ) as Serializer<SubscriptionPlanArgs, SubscriptionPlan>;
 }

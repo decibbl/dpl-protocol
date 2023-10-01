@@ -24,7 +24,7 @@ test = "yarn run ts-mocha -p ./tsconfig.json -t 1000000 tests/**/*.ts"
 # utils
 deploy-idl = "ts-node ./scripts/deployIdl.ts"
 ipfs = "ts-node ./scripts/ipfs/index.ts"
-kinobi = "ts-node ./scripts/kinobi.ts"
+kinobi = "ts-node ./scripts/kinobi.ts && cp -r ./target/generated/ ./sdk"
 
 # token
 create-token = "ts-node ./scripts/token/createToken.ts"

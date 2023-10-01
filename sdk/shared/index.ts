@@ -14,7 +14,7 @@ import {
   PublicKey,
   Signer,
   isPda,
-} from '@metaplex-foundation/umi';
+} from "@metaplex-foundation/umi";
 
 /**
  * Transforms the given object such that the given keys are optional.
@@ -29,7 +29,7 @@ export type PickPartial<T, K extends keyof T> = Omit<T, K> &
  */
 export function expectSome<T>(value: T | null | undefined): T {
   if (value == null) {
-    throw new Error('Expected a value but received null or undefined.');
+    throw new Error("Expected a value but received null or undefined.");
   }
   return value;
 }
@@ -42,7 +42,7 @@ export function expectPublicKey(
   value: PublicKey | Pda | Signer | null | undefined
 ): PublicKey {
   if (!value) {
-    throw new Error('Expected a PublicKey.');
+    throw new Error("Expected a PublicKey.");
   }
   return publicKey(value, false);
 }
@@ -55,7 +55,7 @@ export function expectPda(
   value: PublicKey | Pda | Signer | null | undefined
 ): Pda {
   if (!value || !Array.isArray(value) || !isPda(value)) {
-    throw new Error('Expected a PDA.');
+    throw new Error("Expected a PDA.");
   }
   return value;
 }
@@ -90,7 +90,7 @@ export type ResolvedAccountsWithIndices = Record<
  */
 export function getAccountMetasAndSigners(
   accounts: ResolvedAccount[],
-  optionalAccountStrategy: 'omitted' | 'programId',
+  optionalAccountStrategy: "omitted" | "programId",
   programId: PublicKey
 ): [AccountMeta[], Signer[]] {
   const keys: AccountMeta[] = [];
@@ -98,7 +98,7 @@ export function getAccountMetasAndSigners(
 
   accounts.forEach((account) => {
     if (!account.value) {
-      if (optionalAccountStrategy === 'omitted') return;
+      if (optionalAccountStrategy === "omitted") return;
       keys.push({ pubkey: programId, isSigner: false, isWritable: false });
       return;
     }

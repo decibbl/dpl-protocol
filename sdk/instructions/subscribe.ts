@@ -13,24 +13,24 @@ import {
   Signer,
   TransactionBuilder,
   transactionBuilder,
-} from '@metaplex-foundation/umi';
+} from "@metaplex-foundation/umi";
 import {
   Serializer,
   array,
   mapSerializer,
   struct,
   u8,
-} from '@metaplex-foundation/umi/serializers';
+} from "@metaplex-foundation/umi/serializers";
 import {
   ResolvedAccount,
   ResolvedAccountsWithIndices,
   getAccountMetasAndSigners,
-} from '../shared';
+} from "../shared";
 import {
   SubscriptionPlan,
   SubscriptionPlanArgs,
   getSubscriptionPlanSerializer,
-} from '../types';
+} from "../types";
 
 // Accounts.
 export type SubscribeInstructionAccounts = {
@@ -79,10 +79,10 @@ export function getSubscribeInstructionDataSerializer(): Serializer<
   >(
     struct<SubscribeInstructionData>(
       [
-        ['discriminator', array(u8(), { size: 8 })],
-        ['subscriptionPlan', getSubscriptionPlanSerializer()],
+        ["discriminator", array(u8(), { size: 8 })],
+        ["subscriptionPlan", getSubscriptionPlanSerializer()],
       ],
-      { description: 'SubscribeInstructionData' }
+      { description: "SubscribeInstructionData" }
     ),
     (value) => ({
       ...value,
@@ -96,13 +96,13 @@ export type SubscribeInstructionArgs = SubscribeInstructionDataArgs;
 
 // Instruction.
 export function subscribe(
-  context: Pick<Context, 'identity' | 'programs'>,
+  context: Pick<Context, "identity" | "programs">,
   input: SubscribeInstructionAccounts & SubscribeInstructionArgs
 ): TransactionBuilder {
   // Program ID.
   const programId = context.programs.getPublicKey(
-    'dplProtocol',
-    'ywpMZZNG3Nx1Bu2deJCcNxzUUoWSm6YwN9r9jCF8art'
+    "dplProtocol",
+    "ywpMZZNG3Nx1Bu2deJCcNxzUUoWSm6YwN9r9jCF8art"
   );
 
   // Accounts.
@@ -151,15 +151,15 @@ export function subscribe(
   }
   if (!resolvedAccounts.tokenProgram.value) {
     resolvedAccounts.tokenProgram.value = context.programs.getPublicKey(
-      'splToken',
-      'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
+      "splToken",
+      "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
     );
     resolvedAccounts.tokenProgram.isWritable = false;
   }
   if (!resolvedAccounts.systemProgram.value) {
     resolvedAccounts.systemProgram.value = context.programs.getPublicKey(
-      'splSystem',
-      '11111111111111111111111111111111'
+      "splSystem",
+      "11111111111111111111111111111111"
     );
     resolvedAccounts.systemProgram.isWritable = false;
   }
@@ -172,7 +172,7 @@ export function subscribe(
   // Keys and Signers.
   const [keys, signers] = getAccountMetasAndSigners(
     orderedAccounts,
-    'programId',
+    "programId",
     programId
   );
 

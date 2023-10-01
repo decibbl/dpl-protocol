@@ -6,12 +6,12 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { PublicKey } from '@metaplex-foundation/umi';
+import { PublicKey } from "@metaplex-foundation/umi";
 import {
   Serializer,
   publicKey as publicKeySerializer,
   struct,
-} from '@metaplex-foundation/umi/serializers';
+} from "@metaplex-foundation/umi/serializers";
 
 export type SupportedToken = {
   /** mint account of supported SPL Token */
@@ -31,9 +31,9 @@ export function getSupportedTokenSerializer(): Serializer<
 > {
   return struct<SupportedToken>(
     [
-      ['mint', publicKeySerializer()],
-      ['tokenAccount', publicKeySerializer()],
+      ["mint", publicKeySerializer()],
+      ["tokenAccount", publicKeySerializer()],
     ],
-    { description: 'SupportedToken' }
+    { description: "SupportedToken" }
   ) as Serializer<SupportedTokenArgs, SupportedToken>;
 }

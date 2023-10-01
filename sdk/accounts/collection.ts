@@ -18,15 +18,16 @@ import {
   deserializeAccount,
   gpaBuilder,
   publicKey as toPublicKey,
-} from '@metaplex-foundation/umi';
+} from "@metaplex-foundation/umi";
 import {
   Serializer,
   array,
   mapSerializer,
   publicKey as publicKeySerializer,
+  string,
   struct,
   u8,
-} from '@metaplex-foundation/umi/serializers';
+} from "@metaplex-foundation/umi/serializers";
 
 export type Collection = Account<CollectionAccountData>;
 
@@ -56,12 +57,12 @@ export function getCollectionAccountDataSerializer(): Serializer<
   return mapSerializer<CollectionAccountDataArgs, any, CollectionAccountData>(
     struct<CollectionAccountData>(
       [
-        ['discriminator', array(u8(), { size: 8 })],
-        ['artist', publicKeySerializer()],
-        ['mint', publicKeySerializer()],
-        ['platforms', array(publicKeySerializer())],
+        ["discriminator", array(u8(), { size: 8 })],
+        ["artist", publicKeySerializer()],
+        ["mint", publicKeySerializer()],
+        ["platforms", array(publicKeySerializer())],
       ],
-      { description: 'CollectionAccountData' }
+      { description: "CollectionAccountData" }
     ),
     (value) => ({
       ...value,
@@ -75,7 +76,7 @@ export function deserializeCollection(rawAccount: RpcAccount): Collection {
 }
 
 export async function fetchCollection(
-  context: Pick<Context, 'rpc'>,
+  context: Pick<Context, "rpc">,
   publicKey: PublicKey | Pda,
   options?: RpcGetAccountOptions
 ): Promise<Collection> {
@@ -83,12 +84,12 @@ export async function fetchCollection(
     toPublicKey(publicKey, false),
     options
   );
-  assertAccountExists(maybeAccount, 'Collection');
+  assertAccountExists(maybeAccount, "Collection");
   return deserializeCollection(maybeAccount);
 }
 
 export async function safeFetchCollection(
-  context: Pick<Context, 'rpc'>,
+  context: Pick<Context, "rpc">,
   publicKey: PublicKey | Pda,
   options?: RpcGetAccountOptions
 ): Promise<Collection | null> {
@@ -100,7 +101,7 @@ export async function safeFetchCollection(
 }
 
 export async function fetchAllCollection(
-  context: Pick<Context, 'rpc'>,
+  context: Pick<Context, "rpc">,
   publicKeys: Array<PublicKey | Pda>,
   options?: RpcGetAccountsOptions
 ): Promise<Collection[]> {
@@ -109,13 +110,13 @@ export async function fetchAllCollection(
     options
   );
   return maybeAccounts.map((maybeAccount) => {
-    assertAccountExists(maybeAccount, 'Collection');
+    assertAccountExists(maybeAccount, "Collection");
     return deserializeCollection(maybeAccount);
   });
 }
 
 export async function safeFetchAllCollection(
-  context: Pick<Context, 'rpc'>,
+  context: Pick<Context, "rpc">,
   publicKeys: Array<PublicKey | Pda>,
   options?: RpcGetAccountsOptions
 ): Promise<Collection[]> {
@@ -129,11 +130,11 @@ export async function safeFetchAllCollection(
 }
 
 export function getCollectionGpaBuilder(
-  context: Pick<Context, 'rpc' | 'programs'>
+  context: Pick<Context, "rpc" | "programs">
 ) {
   const programId = context.programs.getPublicKey(
-    'dplProtocol',
-    'ywpMZZNG3Nx1Bu2deJCcNxzUUoWSm6YwN9r9jCF8art'
+    "dplProtocol",
+    "ywpMZZNG3Nx1Bu2deJCcNxzUUoWSm6YwN9r9jCF8art"
   );
   return gpaBuilder(context, programId)
     .registerFields<{
@@ -148,5 +149,44 @@ export function getCollectionGpaBuilder(
       platforms: [72, array(publicKeySerializer())],
     })
     .deserializeUsing<Collection>((account) => deserializeCollection(account))
-    .whereField('discriminator', [48, 160, 232, 205, 191, 207, 26, 141]);
+    .whereField("discriminator", [48, 160, 232, 205, 191, 207, 26, 141]);
+}
+
+export function findCollectionPda(
+  context: Pick<Context, "eddsa" | "programs">,
+  seeds: {
+    authority: PublicKey;
+
+    mint: PublicKey;
+  }
+): Pda {
+  const programId = context.programs.getPublicKey(
+    "dplProtocol",
+    "ywpMZZNG3Nx1Bu2deJCcNxzUUoWSm6YwN9r9jCF8art"
+  );
+  return context.eddsa.findPda(programId, [
+    string({ size: "variable" }).serialize("collection"),
+    publicKeySerializer().serialize(seeds.authority),
+    publicKeySerializer().serialize(seeds.mint),
+  ]);
+}
+
+export async function fetchCollectionFromSeeds(
+  context: Pick<Context, "eddsa" | "programs" | "rpc">,
+  seeds: Parameters<typeof findCollectionPda>[1],
+  options?: RpcGetAccountOptions
+): Promise<Collection> {
+  return fetchCollection(context, findCollectionPda(context, seeds), options);
+}
+
+export async function safeFetchCollectionFromSeeds(
+  context: Pick<Context, "eddsa" | "programs" | "rpc">,
+  seeds: Parameters<typeof findCollectionPda>[1],
+  options?: RpcGetAccountOptions
+): Promise<Collection | null> {
+  return safeFetchCollection(
+    context,
+    findCollectionPda(context, seeds),
+    options
+  );
 }
