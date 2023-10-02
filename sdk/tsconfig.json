@@ -1,12 +1,12 @@
 {
   "compilerOptions": {
     "composite": true,
-    "target": "ES5",
+    "target": "ES2015",
     "module": "CommonJS",
     "strict": true,
     "outDir": "dist",
     "sourceMap": true,
-    "typeRoots": ["node_modules/@types", "./types"],
+    "esModuleInterop": true,
     "declaration": true
   },
   "include": ["src/**/*"],
