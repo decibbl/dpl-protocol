@@ -1,13 +1,14 @@
 {
   "compilerOptions": {
     "composite": true,
-    "target": "ES2015",
-    "module": "CommonJS",
+    "target": "ES2016",
+    "module": "ESNext",
     "strict": true,
     "outDir": "dist",
     "sourceMap": true,
     "esModuleInterop": true,
-    "declaration": true
+    "declaration": true,
+    "moduleResolution": "Bundler"
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules/**/*"],
