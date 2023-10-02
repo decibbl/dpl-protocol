@@ -7,5 +7,10 @@
     "target": "es6",
     "esModuleInterop": true,
     "resolveJsonModule": true
-  }
+  },
+  "references": [
+    {
+      "path": "./sdk/tsconfig.json"
+    }
+  ]
 }
