@@ -22,6 +22,8 @@ export type PlatformDetails = {
    * by the above platform
    */
   mint: PublicKey;
+  /** token account of associated mint given above */
+  tokenAccount: PublicKey;
 };
 
 export type PlatformDetailsArgs = PlatformDetails;
@@ -34,6 +36,7 @@ export function getPlatformDetailsSerializer(): Serializer<
     [
       ["address", publicKeySerializer()],
       ["mint", publicKeySerializer()],
+      ["tokenAccount", publicKeySerializer()],
     ],
     { description: "PlatformDetails" }
   ) as Serializer<PlatformDetailsArgs, PlatformDetails>;

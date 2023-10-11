@@ -9,6 +9,9 @@ pub struct PlatformDetails {
     /// royalties in, which are supported
     /// by the above platform
     pub mint: Pubkey,
+
+    /// token account of associated mint given above
+    pub token_account: Pubkey,
 }
 
 #[account]

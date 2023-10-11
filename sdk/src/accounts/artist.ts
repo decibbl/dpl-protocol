@@ -158,7 +158,7 @@ export function getArtistGpaBuilder(
 }
 
 export function getArtistSize(): number {
-  return 136;
+  return 168;
 }
 
 export function findArtistPda(

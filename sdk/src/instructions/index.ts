@@ -18,6 +18,7 @@ export * from "./createCollection";
 export * from "./createPlatform";
 export * from "./createUser";
 export * from "./delistSubscription";
+export * from "./distributeFunds";
 export * from "./listSubscription";
 export * from "./printArtwork";
 export * from "./renewal";

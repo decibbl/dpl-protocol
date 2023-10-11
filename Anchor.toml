@@ -38,6 +38,7 @@ create-platform-user = "ts-node ./scripts/platform/createAndAddUserMint.ts"
 add-supported-token-details = "ts-node ./scripts/platform/addSupportedTokenDetails.ts"
 add-subscription-plan = "ts-node ./scripts/platform/addSubscriptionPlan.ts"
 update-subscription-details = "ts-node ./scripts/platform/updateSubscriptionDetails.ts"
+distribute-funds = "ts-node ./scripts/platform/distributeFunds.ts"
 
 # artist
 get-artists = "ts-node ./scripts/artist/getArtists.ts"

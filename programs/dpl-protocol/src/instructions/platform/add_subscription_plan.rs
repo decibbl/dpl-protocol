@@ -24,7 +24,7 @@ pub struct AddSubscriptionPlan<'info> {
     /// token account of respective mint given above
     #[account(
         associated_token::mint = token_mint,
-        associated_token::authority = authority,
+        associated_token::authority = platform,
     )]
     pub token_account: Account<'info, TokenAccount>,
 }
@@ -38,6 +38,13 @@ pub fn add_subscription_plan_handler(
     if platform.subscription_details.is_empty() {
         return err!(ProtocolErrors::NoSubscriptionDetails);
     }
+
+    require!(
+        !platform.subscription_details.iter().any(|s| {
+            s.subscription_plans.iter().any(|p| p.id == plan.id)
+        }),
+        ProtocolErrors::SubscriptionPlanAlreadyExist
+    );
 
     for subscription_detail in &platform.subscription_details {
         if subscription_detail.mint != ctx.accounts.token_mint.key()
@@ -56,11 +63,5 @@ pub fn add_subscription_plan_handler(
         .subscription_plans
         .push(plan);
 
-    // require!(
-    //     !platform.subscription_plans.iter().any(|p| p.id == plan.id),
-    //     ProtocolErrors::SubscriptionPlanAlreadyExist
-    // );
-
-    // platform.subscription_plans.push(plan);
     Ok(())
 }

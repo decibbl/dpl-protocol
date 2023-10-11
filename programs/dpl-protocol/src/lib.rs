@@ -63,6 +63,10 @@ pub mod dpl_protocol {
         platform::update_subscription_details_handler(ctx, subscription_detail, action)
     }
 
+    pub fn distribute_funds(ctx: Context<DistributeFunds>, amount: u64) -> Result<()> {
+        platform::distribute_funds_handler(ctx, amount)
+    }
+
     // artist
     pub fn create_artist(ctx: Context<CreateArtist>, asset_data: AssetData) -> Result<()> {
         artist::create_artist_handler(ctx, asset_data)

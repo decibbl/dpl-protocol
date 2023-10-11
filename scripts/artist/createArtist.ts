@@ -13,7 +13,13 @@ import { initializeKeypair } from "../initializeKeypair";
 import { uploadMetadata } from "../ipfs";
 import { Network, getUrls } from "../networks";
 
-export const createArtist = async ({ platform }: { platform: PublicKey }) => {
+export const createArtist = async ({
+  platform,
+  paymentMint,
+}: {
+  platform: PublicKey;
+  paymentMint: PublicKey;
+}) => {
   try {
     const authority = await initializeKeypair(connection, "artist1");
     const workspace = new Workspace(authority);
@@ -32,6 +38,11 @@ export const createArtist = async ({ platform }: { platform: PublicKey }) => {
     const metadata = workspace.findMetadataPda(mint.publicKey);
 
     const masterEdition = workspace.findMasterEditionPda(mint.publicKey);
+
+    const artistTokenAccount = getAssociatedTokenAddressSync(
+      paymentMint,
+      authority.publicKey
+    );
 
     const fetchedPlatform = await workspace.program.account.platform.fetch(
       platform
@@ -111,6 +122,7 @@ export const createArtist = async ({ platform }: { platform: PublicKey }) => {
         collectionMasterEdition,
         collectionAuthority: fetchedPlatform.authority,
         tokenMint: fetchedPlatform.subscriptionDetails[0].mint,
+        artistTokenAccount,
       })
       .signers([])
       .instruction();
@@ -137,4 +149,5 @@ export const createArtist = async ({ platform }: { platform: PublicKey }) => {
 
 createArtist({
   platform: new PublicKey(process.argv[2]),
+  paymentMint: new PublicKey(process.argv[3]),
 });

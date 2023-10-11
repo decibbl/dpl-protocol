@@ -15,7 +15,7 @@ import { Network, getUrls } from "../networks";
 
 export const createUser = async ({ domain }: { domain: string }) => {
   try {
-    const authority = await initializeKeypair(connection, "user2");
+    const authority = await initializeKeypair(connection, "user1");
     const platformAuthority = await initializeKeypair(connection, "platform1");
 
     const workspace = new Workspace(authority);

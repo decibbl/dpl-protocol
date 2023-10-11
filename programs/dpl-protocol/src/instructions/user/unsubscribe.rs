@@ -27,12 +27,13 @@ pub fn unsubscribe_handler(ctx: Context<Unsubscribe>) -> Result<()> {
         return err!(ProtocolErrors::NotSubscribed);
     }
 
-    let clock = Clock::get()?;
+    // TODO: If required to be subscribed then uncomment
+    // let clock = Clock::get()?;
 
     // can only unsubscribe when its ahead of end timestamp
-    if clock.unix_timestamp < user.subscription.end_timestamp {
-        return err!(ProtocolErrors::InvalidUnsubscribe);
-    }
+    // if clock.unix_timestamp < user.subscription.end_timestamp {
+    //     return err!(ProtocolErrors::InvalidUnsubscribe);
+    // }
 
     user.subscription.mint = Default::default();
     user.subscription.start_timestamp = 0;

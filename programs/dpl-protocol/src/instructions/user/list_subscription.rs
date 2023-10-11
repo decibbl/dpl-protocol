@@ -96,11 +96,12 @@ pub fn list_subscription_handler(
     }
 
     // check if user has subscribed to long-term plans (> 26 weeks)
-    if user.subscription.subscribed_plan.duration != Duration::TwentySix
-        && user.subscription.subscribed_plan.duration != Duration::FiftyTwo
-    {
-        return err!(ProtocolErrors::ListingNotAllowed);
-    }
+    // TODO: Disabled for testing purpose
+    // if user.subscription.subscribed_plan.duration != Duration::TwentySix
+    //     && user.subscription.subscribed_plan.duration != Duration::FiftyTwo
+    // {
+    //     return err!(ProtocolErrors::ListingNotAllowed);
+    // }
 
     // check if user has enough balance
     if ctx.accounts.authority_token_account.amount < price {

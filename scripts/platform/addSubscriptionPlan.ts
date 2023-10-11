@@ -1,4 +1,5 @@
 import {
+  LAMPORTS_PER_SOL,
   PublicKey,
   TransactionMessage,
   VersionedTransaction,
@@ -30,12 +31,34 @@ export const addSubscriptionPlan = async ({ domain }: { domain: string }) => {
     //   authority.publicKey
     // );
 
+    // const params = {
+    //   id: 1,
+    //   duration: { one: {} },
+    //   price: new BN(0.025 * LAMPORTS_PER_SOL),
+    // }
+    // const params = {
+    //   id: 2,
+    //   duration: { four: {} },
+    //   price: new BN(0.1 * LAMPORTS_PER_SOL),
+    // }
+    const params = {
+      id: 3,
+      duration: { twelve: {} },
+      price: new BN(0.225 * LAMPORTS_PER_SOL),
+    };
+    // const params = {
+    //   id: 4,
+    //   duration: { twentySix: {} },
+    //   price: new BN(0.45 * LAMPORTS_PER_SOL),
+    // }
+    // const params = {
+    //   id: 5,
+    //   duration: { fiftyTwo: {} },
+    //   price: new BN(0.75 * LAMPORTS_PER_SOL),
+    // }
+
     const addSubscriptionPlanInstruction = await workspace.program.methods
-      .addSubscriptionPlan({
-        id: 1,
-        duration: { twentySix: {} },
-        price: new BN(1),
-      })
+      .addSubscriptionPlan(params)
       .accounts({
         platform,
         authority: authority.publicKey,

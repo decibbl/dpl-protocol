@@ -1,5 +1,5 @@
 use anchor_lang::prelude::*;
-use anchor_spl::token::{Mint, Token};
+use anchor_spl::token::{Mint, Token, TokenAccount};
 use mpl_token_metadata::state::{AssetData, PrintSupply};
 
 use crate::{
@@ -73,7 +73,16 @@ pub struct CreateArtist<'info> {
     #[account(mut)]
     pub collection_master_edition: AccountInfo<'info>,
 
-    pub token_mint: Account<'info, Mint>,
+    pub token_mint: Box<Account<'info, Mint>>,
+
+    /// token account of respective mint given above
+    #[account(
+        init_if_needed,
+        payer = authority,
+        associated_token::mint = token_mint,
+        associated_token::authority = authority,
+    )]
+    pub artist_token_account: Box<Account<'info, TokenAccount>>,
 
     pub system_program: Program<'info, System>,
 
@@ -123,6 +132,7 @@ pub fn create_artist_handler(ctx: Context<CreateArtist>, asset_data: AssetData) 
     artist.platforms = PlatformDetails {
         address: ctx.accounts.platform.key(),
         mint: ctx.accounts.token_mint.key(),
+        token_account: ctx.accounts.artist_token_account.key(),
     };
 
     Ok(())

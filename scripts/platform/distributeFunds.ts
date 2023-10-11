@@ -1,4 +1,5 @@
 import {
+  LAMPORTS_PER_SOL,
   PublicKey,
   TransactionMessage,
   VersionedTransaction,
@@ -7,8 +8,9 @@ import { Workspace, connection, network } from "..";
 import { initializeKeypair } from "../initializeKeypair";
 import { Network, getUrls } from "../networks";
 import { getAssociatedTokenAddressSync } from "@solana/spl-token";
+import { BN } from "bn.js";
 
-export const addSupportedTokenDetails = async ({
+export const distributeFunds = async ({
   domain,
   tokenMint,
 }: {
@@ -16,19 +18,18 @@ export const addSupportedTokenDetails = async ({
   tokenMint: PublicKey;
 }) => {
   try {
-    const authority = await initializeKeypair(connection, "platform1");
+    const platformAuthority = await initializeKeypair(connection, "platform1");
+    const authority = await initializeKeypair(connection, "artist1");
     const workspace = new Workspace(authority);
 
-    const platform = workspace.findPlatformPda(domain, authority.publicKey);
+    const platform = workspace.findPlatformPda(
+      domain,
+      platformAuthority.publicKey
+    );
     console.log("Platform:", platform.toBase58());
 
-    // const tokenMint = new PublicKey(
-    //   "So11111111111111111111111111111111111111112"
-    // );
-
-    // const tokenMint = new PublicKey(
-    //   "4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU"
-    // );
+    const artist = workspace.findArtistPda(authority.publicKey);
+    console.log("Artist:", artist.toBase58());
 
     const tokenAccount = getAssociatedTokenAddressSync(
       tokenMint,
@@ -36,21 +37,29 @@ export const addSupportedTokenDetails = async ({
       true
     );
 
+    const artistTokenAccount = getAssociatedTokenAddressSync(
+      tokenMint,
+      authority.publicKey
+    );
+
     console.log("Token Account:", tokenAccount.toBase58());
 
-    const addSupportedTokenDetailsInstruction = await workspace.program.methods
-      .addSupportedTokenDetails()
+    const distributeFundsInstruction = await workspace.program.methods
+      .distributeFunds(new BN(0.001 * LAMPORTS_PER_SOL))
       .accounts({
         platform,
+        artist,
         authority: authority.publicKey,
+        platformAuthority: platformAuthority.publicKey,
         tokenMint,
         tokenAccount,
+        artistTokenAccount,
       })
       .signers([])
       .instruction();
 
     const messageV0 = new TransactionMessage({
-      instructions: [addSupportedTokenDetailsInstruction],
+      instructions: [distributeFundsInstruction],
       payerKey: authority.publicKey,
       recentBlockhash: (await connection.getLatestBlockhash()).blockhash,
     }).compileToV0Message();
@@ -69,7 +78,7 @@ export const addSupportedTokenDetails = async ({
   }
 };
 
-addSupportedTokenDetails({
+distributeFunds({
   domain: "music.decibbl.com",
   tokenMint: new PublicKey(process.argv[2]),
 });

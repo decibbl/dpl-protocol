@@ -30,7 +30,7 @@ pub struct AddSupportedTokenDetails<'info> {
         init_if_needed,
         payer = authority,
         associated_token::mint = token_mint,
-        associated_token::authority = authority,
+        associated_token::authority = platform,
     )]
     pub token_account: Account<'info, TokenAccount>,
 

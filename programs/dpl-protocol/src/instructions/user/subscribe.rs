@@ -41,7 +41,7 @@ pub struct Subscribe<'info> {
     #[account(
         mut,
         associated_token::mint=supported_token_mint,
-        associated_token::authority=platform.authority,
+        associated_token::authority=platform.key(),
     )]
     pub supported_token_account: Account<'info, TokenAccount>,
 

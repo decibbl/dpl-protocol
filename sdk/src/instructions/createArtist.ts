@@ -45,6 +45,8 @@ export type CreateArtistInstructionAccounts = {
   collectionMetadata: PublicKey | Pda;
   collectionMasterEdition: PublicKey | Pda;
   tokenMint: PublicKey | Pda;
+  /** token account of respective mint given above */
+  artistTokenAccount: PublicKey | Pda;
   systemProgram?: PublicKey | Pda;
   tokenProgram?: PublicKey | Pda;
   metadataTokenProgram: PublicKey | Pda;
@@ -135,28 +137,33 @@ export function createArtist(
       value: input.collectionMasterEdition ?? null,
     },
     tokenMint: { index: 11, isWritable: false, value: input.tokenMint ?? null },
-    systemProgram: {
+    artistTokenAccount: {
       index: 12,
+      isWritable: true,
+      value: input.artistTokenAccount ?? null,
+    },
+    systemProgram: {
+      index: 13,
       isWritable: false,
       value: input.systemProgram ?? null,
     },
     tokenProgram: {
-      index: 13,
+      index: 14,
       isWritable: false,
       value: input.tokenProgram ?? null,
     },
     metadataTokenProgram: {
-      index: 14,
+      index: 15,
       isWritable: false,
       value: input.metadataTokenProgram ?? null,
     },
     sysvarInstructions: {
-      index: 15,
+      index: 16,
       isWritable: false,
       value: input.sysvarInstructions ?? null,
     },
     associatedTokenProgram: {
-      index: 16,
+      index: 17,
       isWritable: false,
       value: input.associatedTokenProgram ?? null,
     },
